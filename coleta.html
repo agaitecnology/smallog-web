@@ -1,3 +1,361 @@
-<h2>Solicitação de Coleta</h2>
-<p>Envie sua solicitação:</p>
-<a href="https://wa.me/SEUNUMERO">Abrir WhatsApp</a>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0">
+<title>SmalLog — Confirmar Entrega</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+     background:#f0f4f8;padding:16px;min-height:100vh}
+.card{background:#fff;border-radius:16px;padding:24px;
+      max-width:440px;margin:0 auto;
+      box-shadow:0 4px 20px rgba(0,0,0,.08)}
+.header{text-align:center;margin-bottom:24px}
+.header h1{color:#00BCD4;font-size:24px;font-weight:700;letter-spacing:-0.5px}
+.header p{color:#888;font-size:13px;margin-top:6px;line-height:1.5}
+.secao{background:#f8f9fa;border-radius:10px;padding:14px;
+       margin-bottom:20px;border-left:3px solid #00BCD4}
+.campo{margin-bottom:14px}
+label{display:block;font-size:12px;font-weight:600;color:#555;
+      margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px}
+input{width:100%;padding:13px;border:1.5px solid #e0e0e0;
+      border-radius:10px;font-size:16px;color:#333;
+      transition:border-color .2s;-webkit-appearance:none}
+input:focus{border-color:#00BCD4;outline:none;
+            box-shadow:0 0 0 3px rgba(0,188,212,.1)}
+input::placeholder{color:#bbb;font-size:14px}
+.req{color:#f44336;margin-left:2px}
+.btn-add{width:100%;padding:12px;background:#f0f9ff;color:#00BCD4;
+         border:1.5px dashed #00BCD4;border-radius:10px;
+         font-size:14px;font-weight:600;cursor:pointer;margin-top:4px}
+.btn-add:active{background:#e0f5fb}
+.btn-remove{background:none;border:none;color:#f44336;
+            cursor:pointer;font-size:18px;padding:4px 8px;
+            float:right;margin-top:-4px}
+.btn-enviar{width:100%;padding:16px;background:#25D366;color:#fff;
+            border:none;border-radius:12px;font-size:17px;
+            font-weight:700;margin-top:8px;cursor:pointer;
+            display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-enviar:active{background:#1da851;transform:scale(.98)}
+.aviso{text-align:center;color:#aaa;font-size:11px;
+       margin-top:14px;line-height:1.6}
+.aviso a{color:#00BCD4;text-decoration:none}
+hr{border:none;border-top:1px solid #eee;margin:20px 0}
+.num{display:inline-flex;align-items:center;justify-content:center;
+     width:22px;height:22px;background:#00BCD4;color:#fff;
+     border-radius:50%;font-size:12px;font-weight:700;margin-right:6px}
+.entrega-header{display:flex;align-items:center;
+                margin-bottom:12px;font-weight:600;color:#333}
+.csv-box{border:2px dashed #00BCD4;border-radius:12px;padding:20px;
+         text-align:center;cursor:pointer;margin-bottom:16px;
+         background:#f0fcff;transition:background .2s}
+.csv-box:hover{background:#e0f7fc}
+.csv-box input{display:none}
+.csv-box p{color:#00BCD4;font-size:14px;font-weight:600;margin:8px 0 4px}
+.csv-box small{color:#888;font-size:12px}
+.tab-btn{flex:1;padding:10px;border:none;background:#f0f4f8;
+         font-size:13px;font-weight:600;cursor:pointer;
+         color:#666;transition:all .2s}
+.tab-btn.ativo{background:#00BCD4;color:#fff;border-radius:8px}
+.tabs{display:flex;gap:4px;margin-bottom:20px;
+      background:#f0f4f8;border-radius:10px;padding:4px}
+.tab-content{display:none}
+.tab-content.ativo{display:block}
+.preview-item{background:#f8f9fa;border-radius:8px;padding:10px;
+              margin-bottom:8px;font-size:13px;border-left:3px solid #00BCD4}
+.preview-item strong{display:block;color:#333;margin-bottom:2px}
+.preview-item span{color:#666}
+.badge{display:inline-block;background:#00BCD4;color:#fff;
+       border-radius:12px;padding:2px 8px;font-size:11px;margin-left:6px}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="header">
+    <h1>📦 SmalLog</h1>
+    <p>Envie os pedidos de entrega para o motoboy</p>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn ativo" onclick="mudarAba('manual')">✏️ Preencher</button>
+    <button class="tab-btn" onclick="mudarAba('csv')">📄 Importar CSV</button>
+  </div>
+
+  <div id="aba-manual" class="tab-content ativo">
+    <div id="entregas"></div>
+    <button class="btn-add" onclick="adicionarEntrega()">
+      + Adicionar outro endereço de entrega
+    </button>
+  </div>
+
+  <div id="aba-csv" class="tab-content">
+    <div class="csv-box" onclick="document.getElementById('csvFile').click()">
+      <input type="file" id="csvFile" accept=".csv,.txt" onchange="lerCSV(this)">
+      <div style="font-size:36px">📄</div>
+      <p>Toque para selecionar o arquivo CSV</p>
+      <small>Formatos: .csv ou .txt — separado por vírgula ou ponto-vírgula</small>
+    </div>
+    <div style="background:#fff8e1;border-radius:10px;padding:14px;
+                margin-bottom:14px;border-left:3px solid #FFC107">
+      <p style="font-size:12px;font-weight:700;color:#F57F17;
+                margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px">
+        📋 Campos do arquivo CSV
+      </p>
+      <table style="width:100%;font-size:12px;border-collapse:collapse">
+        <tr><td style="padding:3px 6px;color:#333;font-weight:600">nome</td><td style="padding:3px 6px;color:#E65100">obrigatório</td><td style="padding:3px 6px;color:#666">Nome do destinatário</td></tr>
+        <tr style="background:#fffde7"><td style="padding:3px 6px;color:#333;font-weight:600">endereco</td><td style="padding:3px 6px;color:#E65100">obrigatório</td><td style="padding:3px 6px;color:#666">Rua, número, bairro</td></tr>
+        <tr><td style="padding:3px 6px;color:#333;font-weight:600">cep</td><td style="padding:3px 6px;color:#E65100">obrigatório</td><td style="padding:3px 6px;color:#666">CEP com 8 dígitos</td></tr>
+        <tr style="background:#fffde7"><td style="padding:3px 6px;color:#333;font-weight:600">cidade</td><td style="padding:3px 6px;color:#E65100">obrigatório</td><td style="padding:3px 6px;color:#666">Cidade e estado</td></tr>
+        <tr><td style="padding:3px 6px;color:#333;font-weight:600">complemento</td><td style="padding:3px 6px;color:#888">opcional</td><td style="padding:3px 6px;color:#666">Apto, bloco, ref.</td></tr>
+        <tr style="background:#fffde7"><td style="padding:3px 6px;color:#333;font-weight:600">nf</td><td style="padding:3px 6px;color:#888">opcional</td><td style="padding:3px 6px;color:#666">Número da nota fiscal</td></tr>
+        <tr><td style="padding:3px 6px;color:#333;font-weight:600">observacoes</td><td style="padding:3px 6px;color:#888">opcional</td><td style="padding:3px 6px;color:#666">Instruções especiais</td></tr>
+      </table>
+      <p style="font-size:11px;color:#888;margin-top:8px">
+        💡 Separador: vírgula (,) ou ponto-vírgula (;) — ambos aceitos
+      </p>
+    </div>
+    <button class="btn-add" onclick="baixarModelo()" style="margin-bottom:16px">
+      ⬇️ Baixar modelo CSV
+    </button>
+    <div id="csv-preview"></div>
+  </div>
+
+  <hr>
+
+  <button class="btn-enviar" onclick="enviar()">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413z"/>
+    </svg>
+    Enviar pelo WhatsApp
+  </button>
+
+  <p class="aviso">
+    Dados enviados diretamente ao entregador.<br>
+    <a href="mailto:suporte@smallog.app">suporte@smallog.app</a>
+  </p>
+</div>
+
+<script>
+var telefone = new URLSearchParams(window.location.search).get('tel') || '5500000000000';
+var contador = 0;
+var abaAtual = 'manual';
+var entregasCSV = [];
+
+function mudarAba(aba) {
+  abaAtual = aba;
+  document.querySelectorAll('.tab-btn').forEach(function(b, i) {
+    b.classList.toggle('ativo', (i === 0 && aba === 'manual') || (i === 1 && aba === 'csv'));
+  });
+  document.getElementById('aba-manual').classList.toggle('ativo', aba === 'manual');
+  document.getElementById('aba-csv').classList.toggle('ativo', aba === 'csv');
+}
+
+function adicionarEntrega() {
+  contador++;
+  var div = document.createElement('div');
+  div.className = 'secao';
+  div.id = 'entrega_' + contador;
+  var removeBtn = contador > 1
+    ? '<button class="btn-remove" onclick="removerEntrega('+contador+')" title="Remover">✕</button>'
+    : '';
+  div.innerHTML =
+    '<div class="entrega-header"><span class="num">'+contador+'</span> Destinatário'+removeBtn+'</div>'+
+    '<div class="campo"><label>Nome completo<span class="req">*</span></label>'+
+    '<input type="text" id="nome_'+contador+'" placeholder="Ex: João da Silva" autocapitalize="words"></div>'+
+    '<div class="campo"><label>CEP<span class="req">*</span></label>'+
+    '<input type="tel" id="cep_'+contador+'" placeholder="00000-000" maxlength="9" inputmode="numeric" oninput="fmtCepBusca(this,'+contador+')"></div>'+
+    '<div class="campo"><label>Logradouro<span class="req">*</span></label>'+
+    '<input type="text" id="end_'+contador+'" placeholder="Preenchido automaticamente pelo CEP"></div>'+
+    '<div class="campo"><label>Número<span class="req">*</span></label>'+
+    '<input type="text" id="num_'+contador+'" placeholder="Ex: 123, S/N"></div>'+
+    '<div class="campo"><label>Complemento</label>'+
+    '<input type="text" id="comp_'+contador+'" placeholder="Apto, bloco (opcional)"></div>'+
+    '<div class="campo"><label>Cidade / Estado<span class="req">*</span></label>'+
+    '<input type="text" id="cid_'+contador+'" placeholder="Preenchido automaticamente pelo CEP"></div>'+
+    '<div class="campo"><label>Observações</label>'+
+    '<textarea id="obs_'+contador+'" placeholder="Ex: Ligar antes, receber R$ 50, entregar às 18h..." rows="2" style="width:100%;padding:13px;border:1.5px solid #e0e0e0;border-radius:10px;font-size:15px;color:#333;resize:none;font-family:inherit"></textarea></div>';
+  document.getElementById('entregas').appendChild(div);
+}
+
+function removerEntrega(n) {
+  var el = document.getElementById('entrega_' + n);
+  if (el) el.remove();
+  document.querySelectorAll('.secao').forEach(function(s, i) {
+    var num = s.querySelector('.num');
+    if (num) num.textContent = (i + 1);
+  });
+}
+
+function fmtCepBusca(input, n) {
+  var v = input.value.replace(/\D/g, '');
+  if (v.length > 5) v = v.slice(0, 5) + '-' + v.slice(5, 8);
+  input.value = v;
+  if (v.replace('-','').length === 8) buscarEnderecoPorCep(v.replace('-',''), n);
+}
+
+function buscarEnderecoPorCep(cep, n) {
+  fetch('https://viacep.com.br/ws/'+cep+'/json/')
+    .then(function(r){ return r.json(); })
+    .then(function(d) {
+      if (!d.erro) {
+        var logr = (d.logradouro || '') + (d.bairro ? ', '+d.bairro : '');
+        var cid  = (d.localidade || '') + (d.uf ? ' - '+d.uf : '');
+        var endEl = document.getElementById('end_'+n);
+        var cidEl = document.getElementById('cid_'+n);
+        if (endEl && logr) endEl.value = logr;
+        if (cidEl && cid)  cidEl.value = cid;
+      }
+    })
+    .catch(function(){});
+}
+
+function val(id) {
+  var el = document.getElementById(id);
+  return el ? el.value.trim() : '';
+}
+
+function lerCSV(input) {
+  var file = input.files[0];
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    entregasCSV = parsearCSV(e.target.result);
+    mostrarPreviewCSV();
+  };
+  reader.readAsText(file, 'UTF-8');
+}
+
+function parsearCSV(texto) {
+  var linhas = texto.split(/\r?\n/).filter(function(l) { return l.trim(); });
+  if (linhas.length < 2) { alert('Arquivo vazio ou inválido'); return []; }
+  var sep = linhas[0].indexOf(';') > linhas[0].indexOf(',') ? ';' : ',';
+  var cabecalho = linhas[0].split(sep).map(function(c) {
+    return c.trim().toLowerCase()
+      .replace(/[áàãâ]/g,'a').replace(/[éê]/g,'e')
+      .replace(/[íi]/g,'i').replace(/[óõô]/g,'o')
+      .replace(/[úu]/g,'u').replace(/ç/g,'c')
+      .replace(/[^a-z0-9]/g,'');
+  });
+  function col(nomes) {
+    for (var i = 0; i < nomes.length; i++) {
+      var idx = cabecalho.indexOf(nomes[i]);
+      if (idx >= 0) return idx;
+    }
+    return -1;
+  }
+  var iNome = col(['nome','destinatario','cliente']);
+  var iObs  = col(['observacoes','obs','observacao','instrucoes']);
+  var iEnd  = col(['endereco','end','logradouro','rua']);
+  var iComp = col(['complemento','comp','apto']);
+  var iCep  = col(['cep','codigopostal','zipcode']);
+  var iCid  = col(['cidade','municipio','city','cidadeuf']);
+  var iUf   = col(['uf','estado','state']);
+  var iNf   = col(['nf','nota','notafiscal','pedido']);
+  var resultado = [];
+  for (var i = 1; i < linhas.length; i++) {
+    var cols = linhas[i].split(sep).map(function(c) { return c.trim().replace(/^"|"$/g,''); });
+    if (cols.length < 2) continue;
+    var cep = iCep >= 0 ? cols[iCep] : '';
+    var digitos = cep.replace(/\D/g,'');
+    if (digitos.length === 8) cep = digitos.slice(0,5)+'-'+digitos.slice(5);
+    var cidade = iCid >= 0 ? cols[iCid] : '';
+    if (iUf >= 0 && cols[iUf] && !cidade.includes('-')) cidade += ' - ' + cols[iUf];
+    resultado.push({
+      nome: iNome >= 0 ? cols[iNome] : '',
+      endereco: iEnd >= 0 ? cols[iEnd] : '',
+      complemento: iComp >= 0 ? cols[iComp] : '',
+      cep: cep, cidade: cidade,
+      nf: iNf >= 0 ? cols[iNf] : '',
+      obs: iObs >= 0 ? cols[iObs] : ''
+    });
+  }
+  return resultado;
+}
+
+function mostrarPreviewCSV() {
+  var div = document.getElementById('csv-preview');
+  if (entregasCSV.length === 0) {
+    div.innerHTML = '<p style="color:#f44336;text-align:center">Nenhuma entrega encontrada.</p>';
+    return;
+  }
+  var html = '<p style="font-weight:600;color:#333;margin-bottom:12px">'+
+    entregasCSV.length+' entrega(s) <span class="badge">✓</span></p>';
+  entregasCSV.forEach(function(e, i) {
+    html += '<div class="preview-item"><strong>'+(i+1)+'. '+(e.nome||'(sem nome)')+'</strong>'+
+      '<span>'+(e.endereco||'')+(e.complemento?', '+e.complemento:'')+'</span><br>'+
+      '<span>CEP: '+(e.cep||'—')+' | '+(e.cidade||'—')+'</span>'+
+      (e.nf?'<br><span>NF: '+e.nf+'</span>':'')+'</div>';
+  });
+  div.innerHTML = html;
+}
+
+function baixarModelo() {
+  var csv = 'nome;endereco;numero;complemento;cep;cidade;uf;nf;observacoes\n'+
+    'Joao Silva;Rua das Flores;123;Apto 4;15030-200;Sao Jose do Rio Preto;SP;4001;Ligar antes\n'+
+    'Maria Santos;Av. Brasil;456;;88809-320;Criciuma;SC;4002;\n';
+  var blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url; a.download = 'modelo_smallog.csv'; a.click();
+  URL.revokeObjectURL(url);
+}
+
+function gerarLink(nome, end, comp, cep, cid) {
+  var base = 'https://smallog.app/redirect';
+  var params = 'nome='+encodeURIComponent(nome)+
+    '&endereco='+encodeURIComponent(end)+
+    '&cep='+encodeURIComponent(cep.replace('-',''))+
+    '&cidade='+encodeURIComponent(cid)+
+    (comp?'&complemento='+encodeURIComponent(comp):'');
+  return base + '?' + params;
+}
+
+function enviar() {
+  var msgs = [];
+  var ok = true;
+
+  if (abaAtual === 'manual') {
+    var secoes = document.querySelectorAll('.secao');
+    if (secoes.length === 0) { alert('Adicione pelo menos um destinatário'); return; }
+    secoes.forEach(function(s, i) {
+      var n = s.id.replace('entrega_','');
+      var nome=val('nome_'+n), logr=val('end_'+n), num=val('num_'+n),
+          comp=val('comp_'+n), cep=val('cep_'+n), cid=val('cid_'+n);
+      var end = logr + (num ? ', '+num : '');
+      if (!nome||!logr||!num||!cep||!cid) {
+        alert('Preencha todos os campos do destinatário '+(i+1)); ok=false; return;
+      }
+      if (cep.replace('-','').length < 8) {
+        alert('CEP inválido no destinatário '+(i+1)); ok=false; return;
+      }
+      var obs = val('obs_'+n);
+      msgs.push((secoes.length>1?'--- Entrega '+(i+1)+' ---\n':'')+
+        'Nome: '+nome+'\nEndereço: '+end+'\n'+(comp?'Complemento: '+comp+'\n':'')+
+        'CEP: '+cep+'\nCidade: '+cid+'\n'+(obs?'Observações: '+obs+'\n':'')+
+        '👉 '+gerarLink(nome,end,comp,cep,cid));
+    });
+  } else {
+    if (entregasCSV.length === 0) { alert('Importe um arquivo CSV primeiro'); return; }
+    entregasCSV.forEach(function(e, i) {
+      if (!e.nome||!e.endereco||!e.cep||!e.cidade) return;
+      msgs.push((entregasCSV.length>1?'--- Entrega '+(i+1)+' ---\n':'')+
+        'Nome: '+e.nome+'\nEndereço: '+e.endereco+'\n'+(e.complemento?'Complemento: '+e.complemento+'\n':'')+
+        'CEP: '+e.cep+'\nCidade: '+e.cidade+'\n'+(e.nf?'NF: '+e.nf+'\n':'')+
+        (e.obs?'Observações: '+e.obs+'\n':'')+
+        '👉 '+gerarLink(e.nome,e.endereco,e.complemento,e.cep,e.cidade));
+    });
+  }
+
+  if (!ok || msgs.length === 0) return;
+  if (!confirm('Enviar '+msgs.length+' entrega(s) para o entregador?')) return;
+
+  var msg = '📦 *Pedidos de Entrega — SmalLog*\n\n'+
+    msgs.join('\n\n')+'\n\n_Enviado via SmalLog_';
+  window.open('https://wa.me/'+telefone+'?text='+encodeURIComponent(msg),'_blank');
+}
+
+adicionarEntrega();
+</script>
+</body>
+</html>
