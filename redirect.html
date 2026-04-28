@@ -18,29 +18,64 @@ p{color:#888;font-size:14px;line-height:1.5;margin:0 0 24px}
      font-weight:700;cursor:pointer;text-decoration:none;
      box-sizing:border-box}
 .btn:active{background:#0097A7}
+.btn-sec{display:block;width:100%;padding:14px;background:#fff;
+         color:#00BCD4;border:1.5px solid #00BCD4;border-radius:12px;
+         font-size:15px;font-weight:600;cursor:pointer;
+         text-decoration:none;box-sizing:border-box;margin-top:10px}
 .spinner{width:40px;height:40px;border:3px solid #e0e0e0;
          border-top-color:#00BCD4;border-radius:50%;
          animation:spin 0.8s linear infinite;margin:0 auto 16px}
 @keyframes spin{to{transform:rotate(360deg)}}
+.badge{display:inline-block;background:#00BCD4;color:#fff;
+       border-radius:12px;padding:3px 10px;font-size:13px;
+       font-weight:700;margin-bottom:8px}
 </style>
 </head>
 <body>
 <div class="card">
-  <div class="spinner"></div>
+  <div class="spinner" id="spinner"></div>
   <h1>📦 SmalLog</h1>
+  <div id="badge-batch" style="display:none"></div>
   <p id="msg">Abrindo o aplicativo...</p>
   <a id="btn-app" class="btn" style="display:none">Abrir SmalLog</a>
-  <a id="btn-manual" class="btn"
-     style="display:none;background:#fff;color:#00BCD4;
-            border:1.5px solid #00BCD4;margin-top:10px"
-     href="/coleta">Preencher manualmente</a>
+  <a id="btn-manual" class="btn-sec" style="display:none" href="/coleta.html">
+    Preencher manualmente
+  </a>
 </div>
 <script>
 var params = new URLSearchParams(window.location.search);
-var deepLink = 'smallog://entrega?' + params.toString();
+var batch  = params.get('batch');
+var deepLink;
+
+if (batch) {
+  // ── Modo batch — múltiplas entregas ──────────────────────
+  deepLink = 'smallog://batch?data=' + encodeURIComponent(batch);
+
+  // Tenta decodificar para mostrar contagem
+  try {
+    var json = decodeURIComponent(escape(atob(decodeURIComponent(batch))));
+    var entregas = JSON.parse(json);
+    var n = entregas.length;
+    document.getElementById('badge-batch').innerHTML =
+      '<span class="badge">'+n+' entrega'+(n>1?'s':'')+' recebida'+(n>1?'s':'')+'</span>';
+    document.getElementById('badge-batch').style.display = 'block';
+    document.getElementById('msg').textContent =
+      'Abrindo o SmalLog para registrar '+n+' entrega'+(n>1?'s':'')+'...';
+  } catch(e) {
+    document.getElementById('msg').textContent = 'Abrindo o aplicativo...';
+  }
+} else {
+  // ── Modo individual — entrega única ──────────────────────
+  deepLink = 'smallog://entrega?' + params.toString();
+  document.getElementById('msg').textContent = 'Abrindo o aplicativo...';
+}
+
+// Dispara o deeplink imediatamente
 window.location.href = deepLink;
+
+// Após 2s mostra botão manual caso o app não abra
 setTimeout(function() {
-  document.querySelector('.spinner').style.display = 'none';
+  document.getElementById('spinner').style.display = 'none';
   document.getElementById('msg').textContent =
     'Toque no botão abaixo para abrir o SmalLog.';
   var btnApp = document.getElementById('btn-app');
