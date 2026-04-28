@@ -301,27 +301,38 @@ function baixarModelo() {
   URL.revokeObjectURL(url);
 }
 
-function gerarLink(nome, end, comp, cep, cid) {
+// ── Etapa 1: gerarLink com obs ────────────────────────────
+function gerarLink(nome, end, comp, cep, cid, obs) {
   var base = 'https://smallog.app/redirect.html';
   var params = 'nome='+encodeURIComponent(nome)+
     '&endereco='+encodeURIComponent(end)+
     '&cep='+encodeURIComponent(cep.replace('-',''))+
     '&cidade='+encodeURIComponent(cid)+
-    (comp?'&complemento='+encodeURIComponent(comp):'');
+    (comp?'&complemento='+encodeURIComponent(comp):'')+
+    (obs?'&observacoes='+encodeURIComponent(obs):'');
   return base + '?' + params;
 }
 
-function enviar() {
-  var msgs = [];
+// ── Etapa 2: gerarLinkBatch — todas as entregas em 1 link ─
+function gerarLinkBatch(entregas) {
+  var json = JSON.stringify(entregas);
+  var base64 = btoa(unescape(encodeURIComponent(json)));
+  return 'https://smallog.app/redirect.html?batch=' + encodeURIComponent(base64);
+}
+
+// ── Coleta todas as entregas da tela ──────────────────────
+function coletarEntregas() {
+  var lista = [];
   var ok = true;
 
   if (abaAtual === 'manual') {
     var secoes = document.querySelectorAll('.secao');
-    if (secoes.length === 0) { alert('Adicione pelo menos um destinatário'); return; }
+    if (secoes.length === 0) { alert('Adicione pelo menos um destinatário'); return null; }
     secoes.forEach(function(s, i) {
       var n = s.id.replace('entrega_','');
       var nome=val('nome_'+n), logr=val('end_'+n), num=val('num_'+n),
-          comp=val('comp_'+n), cep=val('cep_'+n), cid=val('cid_'+n);
+          comp=val('comp_'+n), cep=val('cep_'+n), cid=val('cid_'+n),
+          obs=val('obs_'+n);
       var end = logr + (num ? ', '+num : '');
       if (!nome||!logr||!num||!cep||!cid) {
         alert('Preencha todos os campos do destinatário '+(i+1)); ok=false; return;
@@ -329,29 +340,51 @@ function enviar() {
       if (cep.replace('-','').length < 8) {
         alert('CEP inválido no destinatário '+(i+1)); ok=false; return;
       }
-      var obs = val('obs_'+n);
-      msgs.push((secoes.length>1?'--- Entrega '+(i+1)+' ---\n':'')+
-        'Nome: '+nome+'\nEndereço: '+end+'\n'+(comp?'Complemento: '+comp+'\n':'')+
-        'CEP: '+cep+'\nCidade: '+cid+'\n'+(obs?'Observações: '+obs+'\n':'')+
-        '👉 '+gerarLink(nome,end,comp,cep,cid));
+      lista.push({
+        nome: nome, endereco: end, complemento: comp,
+        cep: cep.replace('-',''), cidade: cid,
+        nf: '', obs: obs
+      });
     });
   } else {
-    if (entregasCSV.length === 0) { alert('Importe um arquivo CSV primeiro'); return; }
-    entregasCSV.forEach(function(e, i) {
+    if (entregasCSV.length === 0) { alert('Importe um arquivo CSV primeiro'); return null; }
+    entregasCSV.forEach(function(e) {
       if (!e.nome||!e.endereco||!e.cep||!e.cidade) return;
-      msgs.push((entregasCSV.length>1?'--- Entrega '+(i+1)+' ---\n':'')+
-        'Nome: '+e.nome+'\nEndereço: '+e.endereco+'\n'+(e.complemento?'Complemento: '+e.complemento+'\n':'')+
-        'CEP: '+e.cep+'\nCidade: '+e.cidade+'\n'+(e.nf?'NF: '+e.nf+'\n':'')+
-        (e.obs?'Observações: '+e.obs+'\n':'')+
-        '👉 '+gerarLink(e.nome,e.endereco,e.complemento,e.cep,e.cidade));
+      lista.push({
+        nome: e.nome, endereco: e.endereco, complemento: e.complemento||'',
+        cep: e.cep.replace('-',''), cidade: e.cidade,
+        nf: e.nf||'', obs: e.obs||''
+      });
     });
   }
 
-  if (!ok || msgs.length === 0) return;
-  if (!confirm('Enviar '+msgs.length+' entrega(s) para o entregador?')) return;
+  return ok ? lista : null;
+}
+
+// ── Envio principal ───────────────────────────────────────
+function enviar() {
+  var lista = coletarEntregas();
+  if (!lista || lista.length === 0) return;
+  if (!confirm('Enviar '+lista.length+' entrega(s) para o entregador?')) return;
+
+  var linkBatch = gerarLinkBatch(lista);
+
+  // Resumo legível das entregas na mensagem
+  var resumo = lista.map(function(e, i) {
+    return '--- Entrega '+(i+1)+' ---\n'+
+      'Nome: '+e.nome+'\n'+
+      'Endereço: '+e.endereco+'\n'+
+      'CEP: '+e.cep+'\n'+
+      'Cidade: '+e.cidade+
+      (e.complemento?'\nComplemento: '+e.complemento:'')+
+      (e.obs?'\nObs: '+e.obs:'');
+  }).join('\n\n');
 
   var msg = '📦 *Pedidos de Entrega — SmalLog*\n\n'+
-    msgs.join('\n\n')+'\n\n_Enviado via SmalLog_';
+    resumo+'\n\n'+
+    '👉 *Abrir tudo no app:*\n'+linkBatch+
+    '\n\n_Enviado via SmalLog_';
+
   window.open('https://wa.me/'+telefone+'?text='+encodeURIComponent(msg),'_blank');
 }
 
