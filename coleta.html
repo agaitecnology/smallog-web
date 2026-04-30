@@ -317,9 +317,8 @@ function gerarLink(nome, end, comp, cep, cid, obs) {
 function gerarLinkBatch(entregas) {
   var json = JSON.stringify(entregas);
   var base64 = btoa(unescape(encodeURIComponent(json)));
-  return 'https://smallog.app/redirect.html?batch=' + encodeURIComponent(base64);
+  return 'https://www.smallog.app/redirect.html?batch=' + encodeURIComponent(base64);
 }
-
 // ── Coleta todas as entregas da tela ──────────────────────
 function coletarEntregas() {
   var lista = [];
