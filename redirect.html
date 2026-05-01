@@ -48,10 +48,8 @@ var batch  = params.get('batch');
 var deepLink;
 
 if (batch) {
-  // ── Modo batch — múltiplas entregas ──────────────────────
   deepLink = 'smallog://batch?data=' + encodeURIComponent(batch);
 
-  // Tenta decodificar para mostrar contagem
   try {
     var json = decodeURIComponent(escape(atob(decodeURIComponent(batch))));
     var entregas = JSON.parse(json);
@@ -65,15 +63,12 @@ if (batch) {
     document.getElementById('msg').textContent = 'Abrindo o aplicativo...';
   }
 } else {
-  // ── Modo individual — entrega única ──────────────────────
   deepLink = 'smallog://entrega?' + params.toString();
   document.getElementById('msg').textContent = 'Abrindo o aplicativo...';
 }
 
-// Dispara o deeplink imediatamente
 window.location.href = deepLink;
 
-// Após 2s mostra botão manual caso o app não abra
 setTimeout(function() {
   document.getElementById('spinner').style.display = 'none';
   document.getElementById('msg').textContent =
