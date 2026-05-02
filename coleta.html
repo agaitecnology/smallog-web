@@ -47,8 +47,6 @@ textarea{resize:none}
 .aviso{text-align:center;color:#aaa;font-size:11px;
        margin-top:12px;line-height:1.6}
 .aviso a{color:#00BCD4;text-decoration:none}
-
-/* Modal */
 .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);
          z-index:100;align-items:flex-end}
 .overlay.ativo{display:flex}
@@ -72,8 +70,6 @@ textarea{resize:none}
 .btn-remover{flex:1;padding:9px;background:#fff5f5;color:#f44336;
              border:1.5px solid #ffcdd2;border-radius:8px;
              font-size:13px;font-weight:700;cursor:pointer}
-.btn-editar:active{background:#e0f5fb}
-.btn-remover:active{background:#ffebee}
 .num-circle{display:inline-flex;align-items:center;justify-content:center;
             width:22px;height:22px;background:#00BCD4;color:#fff;
             border-radius:50%;font-size:11px;font-weight:700;margin-right:6px}
@@ -82,8 +78,6 @@ textarea{resize:none}
        font-size:13px;opacity:0;transition:opacity .3s;z-index:200;
        white-space:nowrap;pointer-events:none}
 .toast.show{opacity:1}
-
-/* Confirmação */
 .confirm-overlay{display:none;position:fixed;inset:0;
                  background:rgba(0,0,0,.5);z-index:150;
                  align-items:center;justify-content:center;padding:20px}
@@ -111,12 +105,10 @@ textarea{resize:none}
     <span id="badge" class="badge-count vazio">0 entregas</span>
   </div>
 
-  <!-- Aviso de edição -->
   <div class="editando-aviso" id="editando-aviso">
     ✏️ Editando entrega — corrija e toque em "Salvar"
   </div>
 
-  <!-- Formulário -->
   <div class="campo">
     <label>Nome completo<span class="req">*</span></label>
     <input type="text" id="nome" placeholder="Ex: João da Silva" autocapitalize="words">
@@ -186,7 +178,7 @@ textarea{resize:none}
   </div>
 </div>
 
-<!-- Confirmação de envio -->
+<!-- Confirmação -->
 <div class="confirm-overlay" id="confirm-overlay">
   <div class="confirm-box">
     <h3>📦 Pronto para enviar!</h3>
@@ -202,13 +194,12 @@ textarea{resize:none}
   </div>
 </div>
 
-<!-- Toast -->
 <div class="toast" id="toast"></div>
 
 <script>
 var telefone = new URLSearchParams(window.location.search).get('tel') || '5500000000000';
 var entregas = [];
-var indiceEditando = -1; // -1 = nova entrega, >= 0 = editando
+var indiceEditando = -1;
 
 function val(id) {
   var el = document.getElementById(id);
@@ -277,17 +268,11 @@ function salvarEntrega() {
   if (!cid)  { alert('Informe a cidade'); document.getElementById('cid').focus(); return; }
 
   var entrega = {
-    nome: nome,
-    endereco: logr+', '+num,
-    complemento: comp,
-    cep: cep.replace('-',''),
-    cidade: cid,
-    nf: '',
-    obs: obs
+    nome: nome, endereco: logr+', '+num, complemento: comp,
+    cep: cep.replace('-',''), cidade: cid, nf: '', obs: obs
   };
 
   if (indiceEditando >= 0) {
-    // Substitui a entrega editada
     entregas[indiceEditando] = entrega;
     mostrarToast('✅ Entrega '+(indiceEditando+1)+' atualizada!');
   } else {
@@ -298,8 +283,6 @@ function salvarEntrega() {
   atualizarUI();
   limparFormulario();
 }
-
-// ── Modal ─────────────────────────────────────────────────
 
 function abrirModal() {
   renderizarLista();
@@ -330,39 +313,28 @@ function renderizarLista() {
       '<div class="item-acoes">'+
         '<button class="btn-editar" onclick="editarEntrega('+i+')">✏️ Editar</button>'+
         '<button class="btn-remover" onclick="removerEntrega('+i+')">🗑️ Remover</button>'+
-      '</div>'+
-      '</div>';
+      '</div></div>';
   }).join('');
 }
 
 function editarEntrega(i) {
   var e = entregas[i];
-
-  // Separa logradouro e número
   var endParts = e.endereco.split(', ');
   var num = endParts.length > 1 ? endParts[endParts.length-1] : '';
   var logr = endParts.length > 1 ? endParts.slice(0,-1).join(', ') : e.endereco;
-
-  // Preenche formulário
   set('nome', e.nome);
-  set('end',  logr);
-  set('num',  num);
+  set('end', logr);
+  set('num', num);
   set('comp', e.complemento);
-  // Formata CEP
   var cep = e.cep;
   if (cep.length === 8) cep = cep.slice(0,5)+'-'+cep.slice(5);
   set('cep', cep);
   set('cid', e.cidade);
   set('obs', e.obs);
-
-  // Marca índice em edição
   indiceEditando = i;
   document.getElementById('editando-aviso').style.display = 'block';
   document.getElementById('btn-salvar').textContent = '💾 Salvar alterações';
-
   fecharModal();
-
-  // Scroll para o topo do formulário
   window.scrollTo({top:0, behavior:'smooth'});
   document.getElementById('nome').focus();
   mostrarToast('✏️ Editando entrega '+(i+1));
@@ -376,20 +348,15 @@ function removerEntrega(i) {
   mostrarToast('🗑️ Entrega removida');
 }
 
-// ── Confirmação e envio ───────────────────────────────────
-
 function confirmarEnvio() {
   if (entregas.length === 0) return;
-
   var nomeAtual = val('nome');
   if (nomeAtual && indiceEditando < 0) {
     if (!confirm('Você tem dados não salvos ('+nomeAtual+'). Ignorar e enviar as '+entregas.length+' entrega(s) já adicionadas?')) return;
   }
-
   var n = entregas.length;
   document.getElementById('confirm-msg').textContent =
-    'Você tem '+n+' entrega'+(n>1?'s':'')+
-    '. Deseja conferir antes de enviar?';
+    'Você tem '+n+' entrega'+(n>1?'s':'')+'. Deseja conferir antes de enviar?';
   document.getElementById('confirm-overlay').classList.add('ativo');
 }
 
@@ -397,33 +364,50 @@ function fecharConfirm() {
   document.getElementById('confirm-overlay').classList.remove('ativo');
 }
 
-function enviarAgora() {
+// ── Envio com backend ─────────────────────────────────────
+
+async function enviarAgora() {
   if (entregas.length === 0) return;
 
-  var linkBatch = gerarLinkBatch(entregas);
+  // Mostra loading no botão
+  var btnEnviar = document.getElementById('btn-enviar');
+  btnEnviar.disabled = true;
+  btnEnviar.textContent = '⏳ Enviando...';
 
-  var resumo = entregas.map(function(e, i) {
-    return '--- Entrega '+(i+1)+' ---\n'+
-      'Nome: '+e.nome+'\n'+
-      'Endereço: '+e.endereco+'\n'+
-      'CEP: '+e.cep+'\n'+
-      'Cidade: '+e.cidade+
-      (e.complemento?'\nComplemento: '+e.complemento:'')+
-      (e.obs?'\nObs: '+e.obs:'');
-  }).join('\n\n');
+  try {
+    // POST para o backend — salva entregas e recebe ID
+    var response = await fetch('/api/coletas', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ entregas: entregas })
+    });
 
-  var msg = '📦 *Pedidos de Entrega — SmalLog*\n\n'+
-    resumo+'\n\n'+
-    '👉 *Abrir tudo no app:*\n'+linkBatch+
-    '\n\n_Enviado via SmalLog_';
+    var data = await response.json();
 
-  window.open('https://wa.me/'+telefone+'?text='+encodeURIComponent(msg),'_blank');
-}
+    if (!data.id) throw new Error('ID não retornado');
 
-function gerarLinkBatch(lista) {
-  var json = JSON.stringify(lista);
-  var base64 = btoa(unescape(encodeURIComponent(json)));
-  return 'https://www.smallog.app/redirect.html?batch='+encodeURIComponent(base64);
+    var id = data.id;
+    var link = 'https://www.smallog.app/c/' + id;
+
+    // Mensagem curta no WhatsApp
+    var resumo = entregas.map(function(e, i) {
+      return (i+1)+'. '+e.nome+' • '+e.endereco.split(',')[0];
+    }).join('\n');
+
+    var msg = '📦 *SmalLog — '+entregas.length+' entrega'+(entregas.length>1?'s':'')+':*\n\n'+
+      resumo+'\n\n'+
+      '👉 '+link+'\n\n'+
+      '_Enviado via SmalLog_';
+
+    window.open('https://wa.me/'+telefone+'?text='+encodeURIComponent(msg),'_blank');
+
+  } catch(e) {
+    alert('Erro ao enviar. Tente novamente.');
+    console.error(e);
+  } finally {
+    btnEnviar.disabled = false;
+    atualizarUI();
+  }
 }
 
 atualizarUI();
