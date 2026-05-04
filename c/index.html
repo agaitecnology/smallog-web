@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Abrindo SmalLog...</title>
+<style>
+body{font-family:-apple-system,sans-serif;background:#f0f4f8;
+     display:flex;align-items:center;justify-content:center;
+     min-height:100vh;margin:0;padding:16px;box-sizing:border-box}
+.card{background:#fff;border-radius:16px;padding:32px 24px;
+      max-width:360px;width:100%;text-align:center;
+      box-shadow:0 4px 20px rgba(0,0,0,.08)}
+h1{color:#00BCD4;font-size:20px;margin:16px 0 8px}
+p{color:#888;font-size:14px;line-height:1.5;margin:0 0 24px}
+.btn{display:block;width:100%;padding:14px;background:#00BCD4;
+     color:#fff;border:none;border-radius:12px;font-size:16px;
+     font-weight:700;cursor:pointer;text-decoration:none;
+     box-sizing:border-box}
+.btn:active{background:#0097A7}
+.btn-sec{display:block;width:100%;padding:14px;background:#fff;
+         color:#00BCD4;border:1.5px solid #00BCD4;border-radius:12px;
+         font-size:15px;font-weight:600;cursor:pointer;
+         text-decoration:none;box-sizing:border-box;margin-top:10px}
+.spinner{width:40px;height:40px;border:3px solid #e0e0e0;
+         border-top-color:#00BCD4;border-radius:50%;
+         animation:spin 0.8s linear infinite;margin:0 auto 16px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.badge{display:inline-block;background:#00BCD4;color:#fff;
+       border-radius:12px;padding:3px 10px;font-size:13px;
+       font-weight:700;margin-bottom:8px}
+.erro{color:#f44336;font-size:14px;margin-bottom:16px}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="spinner" id="spinner"></div>
+  <h1>📦 SmalLog</h1>
+  <div id="badge-batch" style="display:none"></div>
+  <p id="msg">Carregando entregas...</p>
+  <a id="btn-app" class="btn" style="display:none">Abrir SmalLog</a>
+  <a id="btn-manual" class="btn-sec" style="display:none" href="/coleta.html">
+    Preencher manualmente
+  </a>
+</div>
+<script>
+// Extrai ID da URL: /c/ABC123
+var partes = window.location.pathname.split('/');
+var id = partes[partes.length - 1];
+
+if (!id) {
+  document.getElementById('spinner').style.display = 'none';
+  document.getElementById('msg').textContent = 'Link inválido.';
+} else {
+  // Deeplink com ID — simples e curto
+  var deepLink = 'smallog://batch?id=' + encodeURIComponent(id);
+
+  // Dispara o deeplink imediatamente
+  window.location.href = deepLink;
+
+  // Após 2s mostra botão manual caso o app não abra
+  setTimeout(function() {
+    document.getElementById('spinner').style.display = 'none';
+    document.getElementById('msg').textContent =
+      'Toque no botão abaixo para abrir o SmalLog.';
+    var btnApp = document.getElementById('btn-app');
+    btnApp.href = deepLink;
+    btnApp.style.display = 'block';
+    document.getElementById('btn-manual').style.display = 'block';
+  }, 2000);
+}
+</script>
+</body>
+</html>
