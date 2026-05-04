@@ -14,6 +14,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
 .header{text-align:center;margin-bottom:20px}
 .header h1{color:#00BCD4;font-size:24px;font-weight:700;letter-spacing:-0.5px}
 .header p{color:#888;font-size:13px;margin-top:4px}
+.tabs{display:flex;gap:4px;margin-bottom:20px;
+      background:#f0f4f8;border-radius:10px;padding:4px}
+.tab-btn{flex:1;padding:10px;border:none;background:transparent;
+         font-size:13px;font-weight:600;cursor:pointer;
+         color:#666;transition:all .2s;border-radius:8px}
+.tab-btn.ativo{background:#00BCD4;color:#fff}
+.tab-content{display:none}
+.tab-content.ativo{display:block}
 .contador{display:flex;align-items:center;justify-content:center;
           gap:8px;margin-bottom:20px}
 .badge-count{background:#00BCD4;color:#fff;border-radius:20px;
@@ -47,6 +55,23 @@ textarea{resize:none}
 .aviso{text-align:center;color:#aaa;font-size:11px;
        margin-top:12px;line-height:1.6}
 .aviso a{color:#00BCD4;text-decoration:none}
+/* CSV */
+.csv-box{border:2px dashed #00BCD4;border-radius:12px;padding:20px;
+         text-align:center;cursor:pointer;margin-bottom:16px;
+         background:#f0fcff;transition:background .2s}
+.csv-box:hover{background:#e0f7fc}
+.csv-box input{display:none}
+.csv-box p{color:#00BCD4;font-size:14px;font-weight:600;margin:8px 0 4px}
+.csv-box small{color:#888;font-size:12px}
+.preview-item{background:#f8f9fa;border-radius:8px;padding:10px;
+              margin-bottom:8px;font-size:13px;border-left:3px solid #00BCD4}
+.preview-item strong{display:block;color:#333;margin-bottom:2px}
+.preview-item span{color:#666}
+.badge-csv{display:inline-block;background:#00BCD4;color:#fff;
+           border-radius:12px;padding:2px 8px;font-size:11px;margin-left:6px}
+.info-csv{background:#fff8e1;border-radius:10px;padding:14px;
+          margin-bottom:14px;border-left:3px solid #FFC107;font-size:12px}
+/* Modal */
 .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);
          z-index:100;align-items:flex-end}
 .overlay.ativo{display:flex}
@@ -101,54 +126,96 @@ textarea{resize:none}
     <p>Solicite entregas para o motoboy</p>
   </div>
 
-  <div class="contador">
-    <span id="badge" class="badge-count vazio">0 entregas</span>
+  <!-- Abas -->
+  <div class="tabs">
+    <button class="tab-btn ativo" onclick="mudarAba('manual')">✏️ Preencher</button>
+    <button class="tab-btn" onclick="mudarAba('csv')">📄 Importar CSV</button>
   </div>
 
-  <div class="editando-aviso" id="editando-aviso">
-    ✏️ Editando entrega — corrija e toque em "Salvar"
+  <!-- Aba Manual -->
+  <div id="aba-manual" class="tab-content ativo">
+    <div class="contador">
+      <span id="badge" class="badge-count vazio">0 entregas</span>
+    </div>
+
+    <div class="editando-aviso" id="editando-aviso">
+      ✏️ Editando entrega — corrija e toque em "Salvar"
+    </div>
+
+    <div class="campo">
+      <label>Nome completo<span class="req">*</span></label>
+      <input type="text" id="nome" placeholder="Ex: João da Silva" autocapitalize="words">
+    </div>
+    <div class="campo">
+      <label>CEP<span class="req">*</span></label>
+      <input type="tel" id="cep" placeholder="00000-000" maxlength="9"
+             inputmode="numeric" oninput="fmtCepBusca(this)">
+    </div>
+    <div class="campo">
+      <label>Logradouro<span class="req">*</span></label>
+      <input type="text" id="end" placeholder="Preenchido automaticamente pelo CEP">
+    </div>
+    <div class="campo">
+      <label>Número<span class="req">*</span></label>
+      <input type="text" id="num" placeholder="Ex: 123, S/N">
+    </div>
+    <div class="campo">
+      <label>Complemento</label>
+      <input type="text" id="comp" placeholder="Apto, bloco (opcional)">
+    </div>
+    <div class="campo">
+      <label>Cidade / Estado<span class="req">*</span></label>
+      <input type="text" id="cid" placeholder="Preenchido automaticamente pelo CEP">
+    </div>
+    <div class="campo">
+      <label>Observações</label>
+      <textarea id="obs" rows="2"
+        placeholder="Ex: Ligar antes, receber R$ 50, entregar às 18h..."></textarea>
+    </div>
+
+    <hr class="divider">
+
+    <button class="btn btn-add" id="btn-salvar" onclick="salvarEntrega()">
+      ➕ Salvar e adicionar outra
+    </button>
+
+    <button class="btn btn-ver" id="btn-ver" onclick="abrirModal()" style="display:none">
+      📋 Ver todas (<span id="count-ver">0</span>)
+    </button>
   </div>
 
-  <div class="campo">
-    <label>Nome completo<span class="req">*</span></label>
-    <input type="text" id="nome" placeholder="Ex: João da Silva" autocapitalize="words">
-  </div>
-  <div class="campo">
-    <label>CEP<span class="req">*</span></label>
-    <input type="tel" id="cep" placeholder="00000-000" maxlength="9"
-           inputmode="numeric" oninput="fmtCepBusca(this)">
-  </div>
-  <div class="campo">
-    <label>Logradouro<span class="req">*</span></label>
-    <input type="text" id="end" placeholder="Preenchido automaticamente pelo CEP">
-  </div>
-  <div class="campo">
-    <label>Número<span class="req">*</span></label>
-    <input type="text" id="num" placeholder="Ex: 123, S/N">
-  </div>
-  <div class="campo">
-    <label>Complemento</label>
-    <input type="text" id="comp" placeholder="Apto, bloco (opcional)">
-  </div>
-  <div class="campo">
-    <label>Cidade / Estado<span class="req">*</span></label>
-    <input type="text" id="cid" placeholder="Preenchido automaticamente pelo CEP">
-  </div>
-  <div class="campo">
-    <label>Observações</label>
-    <textarea id="obs" rows="2"
-      placeholder="Ex: Ligar antes, receber R$ 50, entregar às 18h..."></textarea>
+  <!-- Aba CSV -->
+  <div id="aba-csv" class="tab-content">
+    <div class="csv-box" onclick="document.getElementById('csvFile').click()">
+      <input type="file" id="csvFile" accept=".csv,.txt" onchange="lerCSV(this)">
+      <div style="font-size:36px">📄</div>
+      <p>Toque para selecionar o arquivo CSV</p>
+      <small>Formatos: .csv ou .txt — separado por vírgula ou ponto-vírgula</small>
+    </div>
+
+    <div class="info-csv">
+      <p style="font-weight:700;color:#F57F17;margin-bottom:8px">📋 Colunas do CSV</p>
+      <table style="width:100%;font-size:12px;border-collapse:collapse">
+        <tr><td style="padding:3px 6px;font-weight:600">nome</td><td style="color:#E65100">obrigatório</td></tr>
+        <tr style="background:#fffde7"><td style="padding:3px 6px;font-weight:600">endereco</td><td style="color:#E65100">obrigatório</td></tr>
+        <tr><td style="padding:3px 6px;font-weight:600">numero</td><td style="color:#E65100">obrigatório</td></tr>
+        <tr style="background:#fffde7"><td style="padding:3px 6px;font-weight:600">cep</td><td style="color:#E65100">obrigatório</td></tr>
+        <tr><td style="padding:3px 6px;font-weight:600">cidade</td><td style="color:#E65100">obrigatório</td></tr>
+        <tr style="background:#fffde7"><td style="padding:3px 6px;font-weight:600">complemento</td><td style="color:#888">opcional</td></tr>
+        <tr><td style="padding:3px 6px;font-weight:600">uf</td><td style="color:#888">opcional</td></tr>
+        <tr style="background:#fffde7"><td style="padding:3px 6px;font-weight:600">nf</td><td style="color:#888">opcional</td></tr>
+        <tr><td style="padding:3px 6px;font-weight:600">observacoes</td><td style="color:#888">opcional</td></tr>
+      </table>
+    </div>
+
+    <button class="btn btn-add" onclick="baixarModelo()" style="margin-bottom:16px">
+      ⬇️ Baixar modelo CSV
+    </button>
+
+    <div id="csv-preview"></div>
   </div>
 
   <hr class="divider">
-
-  <button class="btn btn-add" id="btn-salvar" onclick="salvarEntrega()">
-    ➕ Salvar e adicionar outra
-  </button>
-
-  <button class="btn btn-ver" id="btn-ver" onclick="abrirModal()" style="display:none">
-    📋 Ver todas (<span id="count-ver">0</span>)
-  </button>
 
   <button class="btn btn-enviar" id="btn-enviar" onclick="confirmarEnvio()" disabled>
     <svg width="18" height="18" viewBox="0 0 24 24" fill="white">
@@ -200,6 +267,21 @@ textarea{resize:none}
 var telefone = new URLSearchParams(window.location.search).get('tel') || '5500000000000';
 var entregas = [];
 var indiceEditando = -1;
+var abaAtual = 'manual';
+var entregasCSV = [];
+
+// ── Abas ──────────────────────────────────────────────────
+
+function mudarAba(aba) {
+  abaAtual = aba;
+  document.querySelectorAll('.tab-btn').forEach(function(b, i) {
+    b.classList.toggle('ativo', (i===0&&aba==='manual')||(i===1&&aba==='csv'));
+  });
+  document.getElementById('aba-manual').classList.toggle('ativo', aba==='manual');
+  document.getElementById('aba-csv').classList.toggle('ativo', aba==='csv');
+}
+
+// ── Helpers ───────────────────────────────────────────────
 
 function val(id) {
   var el = document.getElementById(id);
@@ -229,12 +311,18 @@ function mostrarToast(msg) {
 function atualizarUI() {
   var n = entregas.length;
   var badge = document.getElementById('badge');
-  badge.textContent = n + (n === 1 ? ' entrega' : ' entregas');
-  badge.className = 'badge-count' + (n === 0 ? ' vazio' : '');
-  document.getElementById('count-ver').textContent = n;
-  document.getElementById('btn-ver').style.display = n > 0 ? 'flex' : 'none';
+  if (badge) {
+    badge.textContent = n + (n === 1 ? ' entrega' : ' entregas');
+    badge.className = 'badge-count' + (n === 0 ? ' vazio' : '');
+  }
+  var countVer = document.getElementById('count-ver');
+  if (countVer) countVer.textContent = n;
+  var btnVer = document.getElementById('btn-ver');
+  if (btnVer) btnVer.style.display = n > 0 ? 'flex' : 'none';
   document.getElementById('btn-enviar').disabled = n === 0;
 }
+
+// ── CEP ───────────────────────────────────────────────────
 
 function fmtCepBusca(input) {
   var v = input.value.replace(/\D/g,'');
@@ -256,6 +344,8 @@ function buscarCep(cep) {
       }
     }).catch(function(){});
 }
+
+// ── Formulário manual ─────────────────────────────────────
 
 function salvarEntrega() {
   var nome=val('nome'), logr=val('end'), num=val('num'),
@@ -283,6 +373,111 @@ function salvarEntrega() {
   atualizarUI();
   limparFormulario();
 }
+
+// ── CSV ───────────────────────────────────────────────────
+
+function lerCSV(input) {
+  var file = input.files[0];
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    entregasCSV = parsearCSV(e.target.result);
+    mostrarPreviewCSV();
+  };
+  reader.readAsText(file, 'UTF-8');
+}
+
+function parsearCSV(texto) {
+  var linhas = texto.split(/\r?\n/).filter(function(l) { return l.trim(); });
+  if (linhas.length < 2) { alert('Arquivo vazio ou inválido'); return []; }
+  var sep = linhas[0].indexOf(';') > linhas[0].indexOf(',') ? ';' : ',';
+  var cabecalho = linhas[0].split(sep).map(function(c) {
+    return c.trim().toLowerCase()
+      .replace(/[áàãâ]/g,'a').replace(/[éê]/g,'e')
+      .replace(/[íi]/g,'i').replace(/[óõô]/g,'o')
+      .replace(/[úu]/g,'u').replace(/ç/g,'c')
+      .replace(/[^a-z0-9]/g,'');
+  });
+  function col(nomes) {
+    for (var i=0;i<nomes.length;i++){
+      var idx=cabecalho.indexOf(nomes[i]);
+      if(idx>=0) return idx;
+    }
+    return -1;
+  }
+  var iNome = col(['nome','destinatario','cliente']);
+  var iEnd  = col(['endereco','end','logradouro','rua']);
+  var iNum  = col(['numero','num','nro']);
+  var iComp = col(['complemento','comp','apto']);
+  var iCep  = col(['cep','codigopostal','zipcode']);
+  var iCid  = col(['cidade','municipio','city','cidadeuf']);
+  var iUf   = col(['uf','estado','state']);
+  var iNf   = col(['nf','nota','notafiscal','pedido']);
+  var iObs  = col(['observacoes','obs','observacao','instrucoes']);
+
+  var resultado = [];
+  for (var i=1;i<linhas.length;i++) {
+    var cols = linhas[i].split(sep).map(function(c){return c.trim().replace(/^"|"$/g,'');});
+    if (cols.length < 2) continue;
+    var cep = iCep>=0 ? cols[iCep] : '';
+    var digitos = cep.replace(/\D/g,'');
+    if (digitos.length===8) cep=digitos.slice(0,5)+'-'+digitos.slice(5);
+    var cidade = iCid>=0 ? cols[iCid] : '';
+    if (iUf>=0 && cols[iUf] && !cidade.includes('-')) cidade += ' - '+cols[iUf];
+    var nome = iNome>=0 ? cols[iNome] : '';
+    var end  = iEnd>=0  ? cols[iEnd]  : '';
+    var num  = iNum>=0  ? cols[iNum]  : '';
+    var endereco = end + (num ? ', '+num : '');
+    resultado.push({
+      nome: nome, endereco: endereco,
+      complemento: iComp>=0 ? cols[iComp] : '',
+      cep: cep.replace('-',''), cidade: cidade,
+      nf: iNf>=0 ? cols[iNf] : '',
+      obs: iObs>=0 ? cols[iObs] : ''
+    });
+  }
+  return resultado;
+}
+
+function mostrarPreviewCSV() {
+  var div = document.getElementById('csv-preview');
+  if (entregasCSV.length === 0) {
+    div.innerHTML = '<p style="color:#f44336;text-align:center">Nenhuma entrega encontrada.</p>';
+    return;
+  }
+  var html = '<p style="font-weight:600;color:#333;margin-bottom:12px">'+
+    entregasCSV.length+' entrega(s) <span class="badge-csv">✓</span></p>';
+  entregasCSV.forEach(function(e, i) {
+    html += '<div class="preview-item"><strong>'+(i+1)+'. '+(e.nome||'(sem nome)')+'</strong>'+
+      '<span>'+e.endereco+'</span><br>'+
+      '<span>CEP: '+(e.cep||'—')+' | '+(e.cidade||'—')+'</span>'+
+      (e.obs?'<br><span style="color:#1565C0;font-size:11px">📝 '+e.obs+'</span>':'')+
+      '</div>';
+  });
+  div.innerHTML = html;
+
+  // Adiciona ao array de entregas
+  entregasCSV.forEach(function(e) {
+    if (e.nome && e.endereco && e.cep && e.cidade) {
+      entregas.push(e);
+    }
+  });
+  atualizarUI();
+  mostrarToast('✅ '+entregasCSV.length+' entrega(s) importada(s)!');
+}
+
+function baixarModelo() {
+  var csv = 'nome;endereco;numero;complemento;cep;cidade;uf;nf;observacoes\n'+
+    'Joao Silva;Rua das Flores;123;Apto 4;15030200;Sao Jose do Rio Preto;SP;4001;Ligar antes\n'+
+    'Maria Santos;Av. Brasil;456;;88809320;Criciuma;SC;4002;\n';
+  var blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href=url; a.download='modelo_smallog.csv'; a.click();
+  URL.revokeObjectURL(url);
+}
+
+// ── Modal ver todas ───────────────────────────────────────
 
 function abrirModal() {
   renderizarLista();
@@ -334,9 +529,10 @@ function editarEntrega(i) {
   indiceEditando = i;
   document.getElementById('editando-aviso').style.display = 'block';
   document.getElementById('btn-salvar').textContent = '💾 Salvar alterações';
-  fecharModal();
+  mudarAba('manual');
   window.scrollTo({top:0, behavior:'smooth'});
   document.getElementById('nome').focus();
+  fecharModal();
   mostrarToast('✏️ Editando entrega '+(i+1));
 }
 
@@ -348,10 +544,12 @@ function removerEntrega(i) {
   mostrarToast('🗑️ Entrega removida');
 }
 
+// ── Confirmação e envio ───────────────────────────────────
+
 function confirmarEnvio() {
   if (entregas.length === 0) return;
   var nomeAtual = val('nome');
-  if (nomeAtual && indiceEditando < 0) {
+  if (nomeAtual && indiceEditando < 0 && abaAtual === 'manual') {
     if (!confirm('Você tem dados não salvos ('+nomeAtual+'). Ignorar e enviar as '+entregas.length+' entrega(s) já adicionadas?')) return;
   }
   var n = entregas.length;
@@ -364,18 +562,14 @@ function fecharConfirm() {
   document.getElementById('confirm-overlay').classList.remove('ativo');
 }
 
-// ── Envio com backend ─────────────────────────────────────
-
 async function enviarAgora() {
   if (entregas.length === 0) return;
 
-  // Mostra loading no botão
   var btnEnviar = document.getElementById('btn-enviar');
   btnEnviar.disabled = true;
   btnEnviar.textContent = '⏳ Enviando...';
 
   try {
-    // POST para o backend — salva entregas e recebe ID
     var response = await fetch('/api/coletas', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -383,13 +577,11 @@ async function enviarAgora() {
     });
 
     var data = await response.json();
-
     if (!data.id) throw new Error('ID não retornado');
 
     var id = data.id;
     var link = 'https://www.smallog.app/c/' + id;
 
-    // Mensagem curta no WhatsApp
     var resumo = entregas.map(function(e, i) {
       return (i+1)+'. '+e.nome+' • '+e.endereco.split(',')[0];
     }).join('\n');
