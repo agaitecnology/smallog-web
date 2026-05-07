@@ -517,13 +517,82 @@ footer a {
 </section>
 
 <!-- CTA FINAL -->
-<section class="cta-section">
-  <h2>Pronto para entregar melhor?</h2>
-  <p>O SmalLog está em fase beta e é totalmente gratuito.<br>Entre em contato para participar dos testes.</p>
-  <a href="mailto:suporte@smallog.app" class="btn-primary" style="display:inline-flex">
-    📲 Quero participar do beta
-  </a>
+<section class="cta-section" id="cadastro">
+  <h2>Quero participar do beta</h2>
+  <p>O SmalLog está em fase beta e é totalmente gratuito.<br>Preencha os dados abaixo e entraremos em contato.</p>
+
+  <div id="form-box" style="max-width:400px;margin:0 auto;text-align:left">
+    <div style="margin-bottom:14px">
+      <label style="display:block;font-size:12px;font-weight:600;color:#8B949E;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Nome completo *</label>
+      <input id="f-nome" type="text" placeholder="Seu nome" style="width:100%;padding:13px;border:1.5px solid rgba(255,255,255,0.1);border-radius:10px;background:rgba(255,255,255,0.05);color:#E6EDF3;font-size:15px;font-family:inherit;outline:none" onfocus="this.style.borderColor='#00BCD4'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'">
+    </div>
+    <div style="margin-bottom:14px">
+      <label style="display:block;font-size:12px;font-weight:600;color:#8B949E;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">E-mail *</label>
+      <input id="f-email" type="email" placeholder="seu@email.com" style="width:100%;padding:13px;border:1.5px solid rgba(255,255,255,0.1);border-radius:10px;background:rgba(255,255,255,0.05);color:#E6EDF3;font-size:15px;font-family:inherit;outline:none" onfocus="this.style.borderColor='#00BCD4'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'">
+    </div>
+    <div style="margin-bottom:14px">
+      <label style="display:block;font-size:12px;font-weight:600;color:#8B949E;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Telefone (opcional)</label>
+      <input id="f-tel" type="tel" placeholder="(00) 00000-0000" style="width:100%;padding:13px;border:1.5px solid rgba(255,255,255,0.1);border-radius:10px;background:rgba(255,255,255,0.05);color:#E6EDF3;font-size:15px;font-family:inherit;outline:none" onfocus="this.style.borderColor='#00BCD4'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'">
+    </div>
+    <div style="margin-bottom:24px">
+      <label style="display:block;font-size:12px;font-weight:600;color:#8B949E;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Cidade / Estado *</label>
+      <input id="f-cidade" type="text" placeholder="Ex: São Paulo - SP" style="width:100%;padding:13px;border:1.5px solid rgba(255,255,255,0.1);border-radius:10px;background:rgba(255,255,255,0.05);color:#E6EDF3;font-size:15px;font-family:inherit;outline:none" onfocus="this.style.borderColor='#00BCD4'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'">
+    </div>
+    <button onclick="enviarCadastro()" id="btn-cadastro" class="btn-primary" style="width:100%">
+      📲 Quero participar do beta
+    </button>
+    <p id="form-msg" style="text-align:center;margin-top:16px;font-size:14px;display:none"></p>
+  </div>
 </section>
+
+<script>
+async function enviarCadastro() {
+  var nome   = document.getElementById('f-nome').value.trim();
+  var email  = document.getElementById('f-email').value.trim();
+  var tel    = document.getElementById('f-tel').value.trim();
+  var cidade = document.getElementById('f-cidade').value.trim();
+  var msg    = document.getElementById('form-msg');
+  var btn    = document.getElementById('btn-cadastro');
+
+  if (!nome || !email || !cidade) {
+    msg.textContent = '⚠️ Preencha nome, e-mail e cidade.';
+    msg.style.color = '#f44336';
+    msg.style.display = 'block';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = '⏳ Enviando...';
+  msg.style.display = 'none';
+
+  try {
+    var response = await fetch('/api/cadastro', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ nome: nome, email: email, telefone: tel, cidade: cidade })
+    });
+
+    var data = await response.json();
+
+    if (data.ok) {
+      document.getElementById('form-box').innerHTML =
+        '<div style="text-align:center;padding:32px 0">' +
+        '<div style="font-size:48px;margin-bottom:16px">🎉</div>' +
+        '<h3 style="font-size:20px;margin-bottom:8px">Obrigado, ' + nome.split(' ')[0] + '!</h3>' +
+        '<p style="color:#8B949E;line-height:1.6">Recebemos seu cadastro.<br>Em breve entraremos em contato com o link de acesso.</p>' +
+        '</div>';
+    } else {
+      throw new Error(data.erro);
+    }
+  } catch(e) {
+    btn.disabled = false;
+    btn.textContent = '📲 Quero participar do beta';
+    msg.textContent = '❌ Erro ao enviar. Tente novamente.';
+    msg.style.color = '#f44336';
+    msg.style.display = 'block';
+  }
+}
+</script>
 
 <!-- FOOTER -->
 <footer>
