@@ -24,10 +24,9 @@ input:focus{border-color:#00BCD4}
      border-radius:12px;font-size:15px;font-weight:700;cursor:pointer}
 .btn:active{background:#0097A7}
 .error{color:#f44336;font-size:13px;text-align:center;margin-top:12px}
-/* Painel */
-#painel{display:none}
+#painel{display:none;max-width:600px;margin:0 auto}
 .header{display:flex;align-items:center;justify-content:space-between;
-        margin-bottom:24px;flex-wrap:gap}
+        margin-bottom:24px}
 .header h2{color:#00BCD4;font-size:18px;font-weight:700}
 .btn-sair{padding:8px 16px;background:transparent;color:#8B949E;
           border:1px solid rgba(255,255,255,0.1);border-radius:8px;
@@ -39,40 +38,35 @@ input:focus{border-color:#00BCD4}
 .stat-box .lbl{font-size:12px;color:#8B949E;margin-top:4px}
 .cadastro{background:#161B22;border:1px solid rgba(255,255,255,0.08);
           border-radius:12px;padding:16px;margin-bottom:10px}
-.cadastro-nome{font-weight:600;font-size:15px;margin-bottom:6px}
-.cadastro-info{font-size:13px;color:#8B949E;line-height:1.8}
+.cadastro-nome{font-weight:600;font-size:15px;margin-bottom:8px}
+.cadastro-info{font-size:13px;color:#8B949E;line-height:2}
 .cadastro-info span{color:#E6EDF3}
 .badge-data{display:inline-block;background:rgba(0,188,212,0.12);
             color:#00BCD4;border-radius:6px;padding:2px 8px;
-            font-size:11px;font-weight:600;margin-top:6px}
+            font-size:11px;font-weight:600;margin-top:8px}
 .loading{text-align:center;color:#8B949E;padding:40px}
 .vazio{text-align:center;color:#8B949E;padding:40px}
 </style>
 </head>
 <body>
 
-<!-- LOGIN -->
-<div class="login" id="login">
+<div class="login" id="tela-login">
   <div class="card">
     <h1>🔐 SmalLog Admin</h1>
     <p class="subtitle">Painel de cadastros do beta</p>
-    <div style="margin-bottom:8px">
-      <label>Senha</label>
-      <input type="password" id="senha" placeholder="••••••••"
-             onkeydown="if(event.key==='Enter')entrar()">
-    </div>
+    <label>Senha</label>
+    <input type="password" id="senha" placeholder="••••••••"
+           onkeydown="if(event.key==='Enter')entrar()">
     <button class="btn" onclick="entrar()">Entrar</button>
     <p class="error" id="erro" style="display:none">Senha incorreta</p>
   </div>
 </div>
 
-<!-- PAINEL -->
 <div id="painel">
   <div class="header">
     <h2>📋 Cadastros do Beta</h2>
     <button class="btn-sair" onclick="sair()">Sair</button>
   </div>
-
   <div class="stats-row">
     <div class="stat-box">
       <div class="num" id="total">—</div>
@@ -83,7 +77,6 @@ input:focus{border-color:#00BCD4}
       <div class="lbl">Cadastros hoje</div>
     </div>
   </div>
-
   <div id="lista"><div class="loading">Carregando...</div></div>
 </div>
 
@@ -96,13 +89,13 @@ function entrar() {
     document.getElementById('erro').style.display = 'block';
     return;
   }
-  document.getElementById('login').style.display = 'none';
+  document.getElementById('tela-login').style.display = 'none';
   document.getElementById('painel').style.display = 'block';
   carregarCadastros();
 }
 
 function sair() {
-  document.getElementById('login').style.display = 'flex';
+  document.getElementById('tela-login').style.display = 'flex';
   document.getElementById('painel').style.display = 'none';
   document.getElementById('senha').value = '';
 }
@@ -111,18 +104,21 @@ async function carregarCadastros() {
   try {
     var response = await fetch('/api/admin-cadastros');
     var data = await response.json();
+    var lista = data.cadastros || [];
 
-    if (!data.cadastros) throw new Error('Erro');
-
-    var lista = data.cadastros.sort(function(a,b) {
-      return new Date(b.data) - new Date(a.data);
+    // Ordena por data mais recente
+    lista.sort(function(a, b) {
+      var da = a.data ? new Date(a.data).getTime() : 0;
+      var db = b.data ? new Date(b.data).getTime() : 0;
+      return db - da;
     });
 
     document.getElementById('total').textContent = lista.length;
 
-    var hoje = new Date().toLocaleDateString('pt-BR');
+    var hojeStr = new Date().toLocaleDateString('pt-BR');
     var hojeCount = lista.filter(function(c) {
-      return new Date(c.data).toLocaleDateString('pt-BR') === hoje;
+      if (!c.data) return false;
+      return new Date(c.data).toLocaleDateString('pt-BR') === hojeStr;
     }).length;
     document.getElementById('hoje').textContent = hojeCount;
 
@@ -133,21 +129,23 @@ async function carregarCadastros() {
     }
 
     document.getElementById('lista').innerHTML = lista.map(function(c) {
-      var data = new Date(c.data).toLocaleString('pt-BR');
+      var dataStr = c.data
+        ? new Date(c.data).toLocaleString('pt-BR')
+        : '—';
       return '<div class="cadastro">' +
-        '<div class="cadastro-nome">👤 ' + c.nome + '</div>' +
+        '<div class="cadastro-nome">👤 ' + (c.nome || '—') + '</div>' +
         '<div class="cadastro-info">' +
-          '📧 <span>' + c.email + '</span><br>' +
+          '📧 <span>' + (c.email || '—') + '</span><br>' +
           '📱 <span>' + (c.telefone || '—') + '</span><br>' +
-          '📍 <span>' + c.cidade + '</span>' +
+          '📍 <span>' + (c.cidade || '—') + '</span>' +
         '</div>' +
-        '<div class="badge-data">🕐 ' + data + '</div>' +
+        '<div class="badge-data">🕐 ' + dataStr + '</div>' +
         '</div>';
     }).join('');
 
   } catch(e) {
     document.getElementById('lista').innerHTML =
-      '<div class="vazio">Erro ao carregar cadastros.</div>';
+      '<div class="vazio">Erro ao carregar: ' + e.message + '</div>';
   }
 }
 </script>
