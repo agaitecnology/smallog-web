@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Baixar SmalLog Beta</title>
+<style>
+body{font-family:-apple-system,sans-serif;background:#0D1117;
+     display:flex;align-items:center;justify-content:center;
+     min-height:100vh;margin:0;padding:16px;box-sizing:border-box}
+.card{background:#161B22;border:1px solid rgba(255,255,255,0.08);
+      border-radius:16px;padding:32px 24px;max-width:360px;
+      width:100%;text-align:center}
+h1{color:#00BCD4;font-size:20px;margin:16px 0 8px;font-weight:700}
+p{color:#8B949E;font-size:14px;line-height:1.5;margin:0 0 24px}
+.btn{display:block;width:100%;padding:14px;background:#00BCD4;
+     color:#fff;border:none;border-radius:12px;font-size:16px;
+     font-weight:700;cursor:pointer;text-decoration:none;
+     box-sizing:border-box}
+.btn:active{background:#0097A7}
+.spinner{width:40px;height:40px;border:3px solid rgba(255,255,255,0.1);
+         border-top-color:#00BCD4;border-radius:50%;
+         animation:spin 0.8s linear infinite;margin:0 auto 16px}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="spinner" id="spinner"></div>
+  <h1>📦 SmalLog Beta</h1>
+  <p id="msg">Redirecionando para o download...</p>
+  <a id="btn" class="btn" style="display:none"
+     href="https://appdistribution.firebase.dev/i/c4f5d7dc070865e9">
+    📲 Baixar SmalLog Beta
+  </a>
+</div>
+<script>
+setTimeout(function() {
+  window.location.href = 'https://appdistribution.firebase.dev/i/c4f5d7dc070865e9';
+}, 1500);
+setTimeout(function() {
+  document.getElementById('spinner').style.display = 'none';
+  document.getElementById('msg').textContent =
+    'Toque no botão abaixo para baixar o app.';
+  document.getElementById('btn').style.display = 'block';
+}, 3000);
+</script>
+</body>
+</html>
