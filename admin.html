@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>SmalLog — Admin</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,sans-serif;background:#0D1117;
+     color:#E6EDF3;min-height:100vh;padding:24px}
+.login{display:flex;align-items:center;justify-content:center;
+       min-height:100vh;padding:24px}
+.card{background:#161B22;border:1px solid rgba(255,255,255,0.08);
+      border-radius:16px;padding:32px 24px;max-width:360px;width:100%}
+h1{color:#00BCD4;font-size:20px;font-weight:700;margin-bottom:8px;text-align:center}
+.subtitle{color:#8B949E;font-size:13px;text-align:center;margin-bottom:24px}
+label{display:block;font-size:12px;font-weight:600;color:#8B949E;
+      text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+input{width:100%;padding:13px;border:1.5px solid rgba(255,255,255,0.1);
+      border-radius:10px;background:rgba(255,255,255,0.05);
+      color:#E6EDF3;font-size:15px;font-family:inherit;outline:none;margin-bottom:16px}
+input:focus{border-color:#00BCD4}
+.btn{width:100%;padding:14px;background:#00BCD4;color:#fff;border:none;
+     border-radius:12px;font-size:15px;font-weight:700;cursor:pointer}
+.btn:active{background:#0097A7}
+.error{color:#f44336;font-size:13px;text-align:center;margin-top:12px}
+/* Painel */
+#painel{display:none}
+.header{display:flex;align-items:center;justify-content:space-between;
+        margin-bottom:24px;flex-wrap:gap}
+.header h2{color:#00BCD4;font-size:18px;font-weight:700}
+.btn-sair{padding:8px 16px;background:transparent;color:#8B949E;
+          border:1px solid rgba(255,255,255,0.1);border-radius:8px;
+          font-size:13px;cursor:pointer}
+.stats-row{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:24px}
+.stat-box{background:#161B22;border:1px solid rgba(255,255,255,0.08);
+          border-radius:12px;padding:16px;text-align:center}
+.stat-box .num{font-size:28px;font-weight:700;color:#00BCD4}
+.stat-box .lbl{font-size:12px;color:#8B949E;margin-top:4px}
+.cadastro{background:#161B22;border:1px solid rgba(255,255,255,0.08);
+          border-radius:12px;padding:16px;margin-bottom:10px}
+.cadastro-nome{font-weight:600;font-size:15px;margin-bottom:6px}
+.cadastro-info{font-size:13px;color:#8B949E;line-height:1.8}
+.cadastro-info span{color:#E6EDF3}
+.badge-data{display:inline-block;background:rgba(0,188,212,0.12);
+            color:#00BCD4;border-radius:6px;padding:2px 8px;
+            font-size:11px;font-weight:600;margin-top:6px}
+.loading{text-align:center;color:#8B949E;padding:40px}
+.vazio{text-align:center;color:#8B949E;padding:40px}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login" id="login">
+  <div class="card">
+    <h1>🔐 SmalLog Admin</h1>
+    <p class="subtitle">Painel de cadastros do beta</p>
+    <div style="margin-bottom:8px">
+      <label>Senha</label>
+      <input type="password" id="senha" placeholder="••••••••"
+             onkeydown="if(event.key==='Enter')entrar()">
+    </div>
+    <button class="btn" onclick="entrar()">Entrar</button>
+    <p class="error" id="erro" style="display:none">Senha incorreta</p>
+  </div>
+</div>
+
+<!-- PAINEL -->
+<div id="painel">
+  <div class="header">
+    <h2>📋 Cadastros do Beta</h2>
+    <button class="btn-sair" onclick="sair()">Sair</button>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-box">
+      <div class="num" id="total">—</div>
+      <div class="lbl">Total de cadastros</div>
+    </div>
+    <div class="stat-box">
+      <div class="num" id="hoje">—</div>
+      <div class="lbl">Cadastros hoje</div>
+    </div>
+  </div>
+
+  <div id="lista"><div class="loading">Carregando...</div></div>
+</div>
+
+<script>
+var SENHA = 'Ad1min@smal';
+
+function entrar() {
+  var s = document.getElementById('senha').value;
+  if (s !== SENHA) {
+    document.getElementById('erro').style.display = 'block';
+    return;
+  }
+  document.getElementById('login').style.display = 'none';
+  document.getElementById('painel').style.display = 'block';
+  carregarCadastros();
+}
+
+function sair() {
+  document.getElementById('login').style.display = 'flex';
+  document.getElementById('painel').style.display = 'none';
+  document.getElementById('senha').value = '';
+}
+
+async function carregarCadastros() {
+  try {
+    var response = await fetch('/api/admin-cadastros');
+    var data = await response.json();
+
+    if (!data.cadastros) throw new Error('Erro');
+
+    var lista = data.cadastros.sort(function(a,b) {
+      return new Date(b.data) - new Date(a.data);
+    });
+
+    document.getElementById('total').textContent = lista.length;
+
+    var hoje = new Date().toLocaleDateString('pt-BR');
+    var hojeCount = lista.filter(function(c) {
+      return new Date(c.data).toLocaleDateString('pt-BR') === hoje;
+    }).length;
+    document.getElementById('hoje').textContent = hojeCount;
+
+    if (lista.length === 0) {
+      document.getElementById('lista').innerHTML =
+        '<div class="vazio">Nenhum cadastro ainda.</div>';
+      return;
+    }
+
+    document.getElementById('lista').innerHTML = lista.map(function(c) {
+      var data = new Date(c.data).toLocaleString('pt-BR');
+      return '<div class="cadastro">' +
+        '<div class="cadastro-nome">👤 ' + c.nome + '</div>' +
+        '<div class="cadastro-info">' +
+          '📧 <span>' + c.email + '</span><br>' +
+          '📱 <span>' + (c.telefone || '—') + '</span><br>' +
+          '📍 <span>' + c.cidade + '</span>' +
+        '</div>' +
+        '<div class="badge-data">🕐 ' + data + '</div>' +
+        '</div>';
+    }).join('');
+
+  } catch(e) {
+    document.getElementById('lista').innerHTML =
+      '<div class="vazio">Erro ao carregar cadastros.</div>';
+  }
+}
+</script>
+</body>
+</html>

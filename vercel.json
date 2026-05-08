@@ -1,6 +1,7 @@
 {
   "rewrites": [
     { "source": "/c/:id", "destination": "/c/index.html" },
-    { "source": "/download", "destination": "/download.html" }
+    { "source": "/download", "destination": "/download.html" },
+    { "source": "/admin", "destination": "/admin.html" }
   ]
 }
