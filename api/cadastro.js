@@ -33,7 +33,7 @@ export default async function handler(req, res) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        from: 'SmalLog <onboarding@resend.dev>',
+        from: 'SmalLog <suporte@smallog.app>',
         to: ['suporte@smallog.app'],
         subject: `🚀 Novo interesse no beta — ${nome}`,
         html: `
