@@ -1,5 +1,5 @@
 // api/admin-cadastros.js
-// GET /api/admin-cadastros — lista todos os cadastros salvos no Redis
+// GET /api/admin-cadastros — lista todos os cadastros com chave Redis
 
 import Redis from 'ioredis';
 
@@ -13,21 +13,23 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Busca todas as chaves de cadastro
     const keys = await redis.keys('cadastro:*');
 
     if (keys.length === 0) {
       return res.status(200).json({ cadastros: [] });
     }
 
-    // Busca os dados de cada chave
     const pipeline = redis.pipeline();
     keys.forEach(function(key) { pipeline.get(key); });
     const results = await pipeline.exec();
 
     const cadastros = results
-      .map(function(r) {
-        try { return JSON.parse(r[1]); } catch(e) { return null; }
+      .map(function(r, i) {
+        try {
+          var dados = JSON.parse(r[1]);
+          dados._key = keys[i]; // inclui a chave Redis para deletar
+          return dados;
+        } catch(e) { return null; }
       })
       .filter(Boolean);
 

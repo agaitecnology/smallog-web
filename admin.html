@@ -37,13 +37,20 @@ input:focus{border-color:#00BCD4}
 .stat-box .num{font-size:28px;font-weight:700;color:#00BCD4}
 .stat-box .lbl{font-size:12px;color:#8B949E;margin-top:4px}
 .cadastro{background:#161B22;border:1px solid rgba(255,255,255,0.08);
-          border-radius:12px;padding:16px;margin-bottom:10px}
+          border-radius:12px;padding:16px;margin-bottom:10px;
+          display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.cadastro-body{flex:1}
 .cadastro-nome{font-weight:600;font-size:15px;margin-bottom:8px}
 .cadastro-info{font-size:13px;color:#8B949E;line-height:2}
 .cadastro-info span{color:#E6EDF3}
 .badge-data{display:inline-block;background:rgba(0,188,212,0.12);
             color:#00BCD4;border-radius:6px;padding:2px 8px;
             font-size:11px;font-weight:600;margin-top:8px}
+.btn-remover{padding:8px 12px;background:rgba(244,67,54,0.1);
+             color:#f44336;border:1px solid rgba(244,67,54,0.3);
+             border-radius:8px;font-size:13px;cursor:pointer;
+             white-space:nowrap;flex-shrink:0}
+.btn-remover:hover{background:rgba(244,67,54,0.2)}
 .loading{text-align:center;color:#8B949E;padding:40px}
 .vazio{text-align:center;color:#8B949E;padding:40px}
 </style>
@@ -82,6 +89,7 @@ input:focus{border-color:#00BCD4}
 
 <script>
 var SENHA = 'Ad1min@smal';
+var cadastrosData = [];
 
 function entrar() {
   var s = document.getElementById('senha').value;
@@ -104,35 +112,42 @@ async function carregarCadastros() {
   try {
     var response = await fetch('/api/admin-cadastros');
     var data = await response.json();
-    var lista = data.cadastros || [];
+    cadastrosData = data.cadastros || [];
 
-    // Ordena por data mais recente
-    lista.sort(function(a, b) {
+    cadastrosData.sort(function(a, b) {
       var da = a.data ? new Date(a.data).getTime() : 0;
       var db = b.data ? new Date(b.data).getTime() : 0;
       return db - da;
     });
 
-    document.getElementById('total').textContent = lista.length;
+    renderizar();
+  } catch(e) {
+    document.getElementById('lista').innerHTML =
+      '<div class="vazio">Erro ao carregar: ' + e.message + '</div>';
+  }
+}
 
-    var hojeStr = new Date().toLocaleDateString('pt-BR');
-    var hojeCount = lista.filter(function(c) {
-      if (!c.data) return false;
-      return new Date(c.data).toLocaleDateString('pt-BR') === hojeStr;
-    }).length;
-    document.getElementById('hoje').textContent = hojeCount;
+function renderizar() {
+  var lista = cadastrosData;
+  document.getElementById('total').textContent = lista.length;
 
-    if (lista.length === 0) {
-      document.getElementById('lista').innerHTML =
-        '<div class="vazio">Nenhum cadastro ainda.</div>';
-      return;
-    }
+  var hojeStr = new Date().toLocaleDateString('pt-BR');
+  var hojeCount = lista.filter(function(c) {
+    if (!c.data) return false;
+    return new Date(c.data).toLocaleDateString('pt-BR') === hojeStr;
+  }).length;
+  document.getElementById('hoje').textContent = hojeCount;
 
-    document.getElementById('lista').innerHTML = lista.map(function(c) {
-      var dataStr = c.data
-        ? new Date(c.data).toLocaleString('pt-BR')
-        : '—';
-      return '<div class="cadastro">' +
+  if (lista.length === 0) {
+    document.getElementById('lista').innerHTML =
+      '<div class="vazio">Nenhum cadastro.</div>';
+    return;
+  }
+
+  document.getElementById('lista').innerHTML = lista.map(function(c, i) {
+    var dataStr = c.data ? new Date(c.data).toLocaleString('pt-BR') : '—';
+    return '<div class="cadastro" id="cad-' + i + '">' +
+      '<div class="cadastro-body">' +
         '<div class="cadastro-nome">👤 ' + (c.nome || '—') + '</div>' +
         '<div class="cadastro-info">' +
           '📧 <span>' + (c.email || '—') + '</span><br>' +
@@ -140,12 +155,28 @@ async function carregarCadastros() {
           '📍 <span>' + (c.cidade || '—') + '</span>' +
         '</div>' +
         '<div class="badge-data">🕐 ' + dataStr + '</div>' +
-        '</div>';
-    }).join('');
+      '</div>' +
+      '<button class="btn-remover" onclick="remover(' + i + ')">🗑️ Remover</button>' +
+      '</div>';
+  }).join('');
+}
 
+async function remover(i) {
+  var c = cadastrosData[i];
+  if (!c || !c._key) return;
+  if (!confirm('Remover cadastro de "' + c.nome + '"?')) return;
+
+  try {
+    var response = await fetch('/api/admin-deletar?key=' + encodeURIComponent(c._key), {
+      method: 'DELETE'
+    });
+    var data = await response.json();
+    if (data.ok) {
+      cadastrosData.splice(i, 1);
+      renderizar();
+    }
   } catch(e) {
-    document.getElementById('lista').innerHTML =
-      '<div class="vazio">Erro ao carregar: ' + e.message + '</div>';
+    alert('Erro ao remover. Tente novamente.');
   }
 }
 </script>
