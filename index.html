@@ -20,611 +20,65 @@
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
-
 html { scroll-behavior: smooth; }
+body { font-family: 'DM Sans', sans-serif; background: var(--dark); color: var(--text); overflow-x: hidden; }
 
-body {
-  font-family: 'DM Sans', sans-serif;
-  background: var(--dark);
-  color: var(--text);
-  overflow-x: hidden;
-}
+.hero { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; padding: 60px 24px 80px; position: relative; overflow: hidden; }
+.hero::before { content: ''; position: absolute; top: -200px; right: -200px; width: 600px; height: 600px; background: radial-gradient(circle, rgba(0,188,212,0.15) 0%, transparent 70%); pointer-events: none; }
+.hero::after { content: ''; position: absolute; bottom: -100px; left: -100px; width: 400px; height: 400px; background: radial-gradient(circle, rgba(0,188,212,0.08) 0%, transparent 70%); pointer-events: none; }
 
-/* ── HERO ─────────────────────────────────────── */
+.hero-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(0,188,212,0.12); border: 1px solid rgba(0,188,212,0.3); border-radius: 20px; padding: 6px 14px; font-size: 13px; font-weight: 600; color: var(--cyan); margin-bottom: 28px; width: fit-content; animation: fadeUp 0.6s ease both; }
+.hero h1 { font-family: 'Syne', sans-serif; font-size: clamp(42px, 10vw, 72px); font-weight: 800; line-height: 1.05; letter-spacing: -2px; margin-bottom: 20px; animation: fadeUp 0.6s 0.1s ease both; }
+.hero h1 span { color: var(--cyan); }
+.hero p { font-size: clamp(16px, 4vw, 20px); color: var(--text-muted); line-height: 1.6; max-width: 480px; margin-bottom: 40px; animation: fadeUp 0.6s 0.2s ease both; }
+.hero-cta { display: flex; flex-direction: column; gap: 12px; animation: fadeUp 0.6s 0.3s ease both; }
 
-.hero {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 60px 24px 80px;
-  position: relative;
-  overflow: hidden;
-}
-
-.hero::before {
-  content: '';
-  position: absolute;
-  top: -200px;
-  right: -200px;
-  width: 600px;
-  height: 600px;
-  background: radial-gradient(circle, rgba(0,188,212,0.15) 0%, transparent 70%);
-  pointer-events: none;
-}
-
-.hero::after {
-  content: '';
-  position: absolute;
-  bottom: -100px;
-  left: -100px;
-  width: 400px;
-  height: 400px;
-  background: radial-gradient(circle, rgba(0,188,212,0.08) 0%, transparent 70%);
-  pointer-events: none;
-}
-
-.hero-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: rgba(0,188,212,0.12);
-  border: 1px solid rgba(0,188,212,0.3);
-  border-radius: 20px;
-  padding: 6px 14px;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--cyan);
-  margin-bottom: 28px;
-  width: fit-content;
-  animation: fadeUp 0.6s ease both;
-}
-
-.hero h1 {
-  font-family: 'Syne', sans-serif;
-  font-size: clamp(42px, 10vw, 72px);
-  font-weight: 800;
-  line-height: 1.05;
-  letter-spacing: -2px;
-  margin-bottom: 20px;
-  animation: fadeUp 0.6s 0.1s ease both;
-}
-
-.hero h1 span {
-  color: var(--cyan);
-}
-
-.hero p {
-  font-size: clamp(16px, 4vw, 20px);
-  color: var(--text-muted);
-  line-height: 1.6;
-  max-width: 480px;
-  margin-bottom: 40px;
-  animation: fadeUp 0.6s 0.2s ease both;
-}
-
-.hero-cta {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  animation: fadeUp 0.6s 0.3s ease both;
-}
-
-.btn-primary {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  background: var(--cyan);
-  color: #fff;
-  padding: 16px 28px;
-  border-radius: 14px;
-  font-size: 16px;
-  font-weight: 600;
-  text-decoration: none;
-  transition: background 0.2s, transform 0.1s;
-  border: none;
-  cursor: pointer;
-}
-
+.btn-primary { display: inline-flex; align-items: center; justify-content: center; gap: 10px; background: var(--cyan); color: #fff; padding: 16px 28px; border-radius: 14px; font-size: 16px; font-weight: 600; text-decoration: none; transition: background 0.2s, transform 0.1s; border: none; cursor: pointer; }
 .btn-primary:active { transform: scale(0.98); background: var(--cyan-dark); }
-
-.btn-secondary {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  background: transparent;
-  color: var(--cyan);
-  padding: 15px 28px;
-  border-radius: 14px;
-  font-size: 16px;
-  font-weight: 600;
-  text-decoration: none;
-  border: 1.5px solid rgba(0,188,212,0.4);
-  transition: border-color 0.2s, background 0.2s;
-}
-
+.btn-secondary { display: inline-flex; align-items: center; justify-content: center; gap: 10px; background: transparent; color: var(--cyan); padding: 15px 28px; border-radius: 14px; font-size: 16px; font-weight: 600; text-decoration: none; border: 1.5px solid rgba(0,188,212,0.4); transition: border-color 0.2s, background 0.2s; }
 .btn-secondary:hover { background: rgba(0,188,212,0.06); border-color: var(--cyan); }
 
-/* ── STATS ────────────────────────────────────── */
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.stat { background: var(--dark); padding: 28px 20px; text-align: center; }
+.stat-num { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800; color: var(--cyan); display: block; }
+.stat-label { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
 
-.stats {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1px;
-  background: var(--border);
-  border-top: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
-}
+.section { padding: 80px 24px; }
+.section-label { font-size: 12px; font-weight: 600; color: var(--cyan); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 12px; }
+.section h2 { font-family: 'Syne', sans-serif; font-size: clamp(28px, 6vw, 42px); font-weight: 800; letter-spacing: -1px; line-height: 1.1; margin-bottom: 48px; }
 
-.stat {
-  background: var(--dark);
-  padding: 28px 20px;
-  text-align: center;
-}
-
-.stat-num {
-  font-family: 'Syne', sans-serif;
-  font-size: 28px;
-  font-weight: 800;
-  color: var(--cyan);
-  display: block;
-}
-
-.stat-label {
-  font-size: 12px;
-  color: var(--text-muted);
-  margin-top: 4px;
-}
-
-/* ── FEATURES ─────────────────────────────────── */
-
-.section {
-  padding: 80px 24px;
-}
-
-.section-label {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--cyan);
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  margin-bottom: 12px;
-}
-
-.section h2 {
-  font-family: 'Syne', sans-serif;
-  font-size: clamp(28px, 6vw, 42px);
-  font-weight: 800;
-  letter-spacing: -1px;
-  line-height: 1.1;
-  margin-bottom: 48px;
-}
-
-.features {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.feature-card {
-  background: var(--dark-2);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 24px;
-  display: flex;
-  gap: 16px;
-  align-items: flex-start;
-  transition: border-color 0.2s;
-}
-
+.features { display: flex; flex-direction: column; gap: 16px; }
+.feature-card { background: var(--dark-2); border: 1px solid var(--border); border-radius: 16px; padding: 24px; display: flex; gap: 16px; align-items: flex-start; transition: border-color 0.2s; }
 .feature-card:hover { border-color: rgba(0,188,212,0.3); }
+.feature-icon { width: 44px; height: 44px; background: rgba(0,188,212,0.12); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+.feature-card h3 { font-size: 16px; font-weight: 600; margin-bottom: 6px; }
+.feature-card p { font-size: 14px; color: var(--text-muted); line-height: 1.5; }
 
-.feature-icon {
-  width: 44px;
-  height: 44px;
-  background: rgba(0,188,212,0.12);
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 20px;
-  flex-shrink: 0;
-}
+.story { padding: 80px 24px; background: var(--dark-2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.story-quote { position: relative; padding-left: 20px; margin: 32px 0; }
+.story-quote::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--cyan); border-radius: 2px; }
+.story-quote p { font-size: clamp(18px, 4vw, 24px); font-style: italic; line-height: 1.5; color: var(--text); }
+.story-body p { font-size: 16px; color: var(--text-muted); line-height: 1.8; margin-bottom: 16px; }
+.story-body strong { color: var(--text); }
+.story-signature { margin-top: 32px; display: flex; align-items: center; gap: 12px; }
+.story-avatar { width: 44px; height: 44px; background: rgba(0,188,212,0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+.story-name { font-weight: 600; font-size: 15px; }
+.story-role { font-size: 13px; color: var(--text-muted); }
 
-.feature-card h3 {
-  font-size: 16px;
-  font-weight: 600;
-  margin-bottom: 6px;
-}
+.cta-section { padding: 80px 24px; text-align: center; }
+.cta-section h2 { font-family: 'Syne', sans-serif; font-size: clamp(28px, 6vw, 42px); font-weight: 800; letter-spacing: -1px; margin-bottom: 16px; }
+.cta-section p { font-size: 16px; color: var(--text-muted); margin-bottom: 36px; line-height: 1.6; }
 
-.feature-card p {
-  font-size: 14px;
-  color: var(--text-muted);
-  line-height: 1.5;
-}
+footer { padding: 32px 24px; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 12px; align-items: center; text-align: center; }
+.footer-logo { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 800; color: var(--cyan); }
+footer p { font-size: 13px; color: var(--text-muted); }
+footer a { color: var(--cyan); text-decoration: none; }
 
-/* ── STORY ────────────────────────────────────── */
+@keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes scan { 0% { top: 20%; } 50% { top: 80%; } 100% { top: 20%; } }
+@keyframes spin { to { transform: rotate(360deg); } }
 
-.story {
-  padding: 80px 24px;
-  background: var(--dark-2);
-  border-top: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
-}
-
-.story-quote {
-  position: relative;
-  padding-left: 20px;
-  margin: 32px 0;
-}
-
-.story-quote::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 3px;
-  background: var(--cyan);
-  border-radius: 2px;
-}
-
-.story-quote p {
-  font-size: clamp(18px, 4vw, 24px);
-  font-style: italic;
-  line-height: 1.5;
-  color: var(--text);
-}
-
-.story-body p {
-  font-size: 16px;
-  color: var(--text-muted);
-  line-height: 1.8;
-  margin-bottom: 16px;
-}
-
-.story-body strong {
-  color: var(--text);
-}
-
-.story-signature {
-  margin-top: 32px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.story-avatar {
-  width: 44px;
-  height: 44px;
-  background: rgba(0,188,212,0.15);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 20px;
-}
-
-.story-name {
-  font-weight: 600;
-  font-size: 15px;
-}
-
-.story-role {
-  font-size: 13px;
-  color: var(--text-muted);
-}
-
-/* ── CTA FINAL ────────────────────────────────── */
-
-.cta-section {
-  padding: 80px 24px;
-  text-align: center;
-}
-
-.cta-section h2 {
-  font-family: 'Syne', sans-serif;
-  font-size: clamp(28px, 6vw, 42px);
-  font-weight: 800;
-  letter-spacing: -1px;
-  margin-bottom: 16px;
-}
-
-.cta-section p {
-  font-size: 16px;
-  color: var(--text-muted);
-  margin-bottom: 36px;
-  line-height: 1.6;
-}
-<!-- APP PREVIEW — inserir antes do FOOTER -->
-<section style="padding:80px 0;background:#0D1117;overflow:hidden">
-  <div style="max-width:800px;margin:0 auto;padding:0 24px">
-    <div style="text-align:center;margin-bottom:40px">
-      <p style="font-size:12px;font-weight:600;color:#00BCD4;text-transform:uppercase;letter-spacing:2px;margin-bottom:12px">Como funciona</p>
-      <h2 style="font-family:'Syne',sans-serif;font-size:clamp(28px,6vw,42px);font-weight:800;letter-spacing:-1px;color:#E6EDF3">Veja o app em ação</h2>
-    </div>
-  </div>
-
-  <!-- Carrossel -->
-  <div style="position:relative">
-    <div id="carrossel" style="display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:16px;padding:0 24px 24px;scrollbar-width:none;-ms-overflow-style:none">
-
-      <!-- Tela 1 — Nova Entrega -->
-      <div style="scroll-snap-align:center;flex-shrink:0;width:260px">
-        <div style="background:#161B22;border:1px solid rgba(255,255,255,0.08);border-radius:32px;padding:16px;height:520px;display:flex;flex-direction:column">
-          <!-- Status bar mockup -->
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;padding:0 4px">
-            <span style="color:#E6EDF3;font-size:11px;font-weight:600">9:41</span>
-            <div style="display:flex;gap:4px;align-items:center">
-              <div style="width:12px;height:6px;border:1px solid #E6EDF3;border-radius:1px;position:relative"><div style="width:60%;height:100%;background:#00BCD4;border-radius:1px"></div></div>
-            </div>
-          </div>
-          <!-- AppBar -->
-          <div style="background:#1976D2;border-radius:12px;padding:12px 14px;margin-bottom:14px;text-align:center">
-            <span style="color:#fff;font-size:14px;font-weight:700">Foto do Pacote</span>
-          </div>
-          <!-- Área foto -->
-          <div style="background:#0D1117;border:2px dashed rgba(0,188,212,0.4);border-radius:12px;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;margin-bottom:14px">
-            <div style="font-size:36px;margin-bottom:8px">📦</div>
-            <p style="color:#8B949E;font-size:11px;text-align:center;padding:0 12px">Tire uma foto da etiqueta do pacote</p>
-          </div>
-          <!-- Botões -->
-          <div style="display:flex;gap:8px;margin-bottom:8px">
-            <div style="flex:1;background:#1976D2;border-radius:10px;padding:12px;text-align:center">
-              <div style="font-size:18px">📷</div>
-              <div style="color:#fff;font-size:10px;font-weight:700;margin-top:4px">Câmera</div>
-            </div>
-            <div style="flex:1;background:#7B1FA2;border-radius:10px;padding:12px;text-align:center">
-              <div style="font-size:18px">🎤</div>
-              <div style="color:#fff;font-size:10px;font-weight:700;margin-top:4px">Voz</div>
-            </div>
-          </div>
-          <div style="border:1.5px solid #388E3C;border-radius:10px;padding:10px;text-align:center">
-            <span style="color:#388E3C;font-size:11px;font-weight:600">✏️ Digitar manualmente</span>
-          </div>
-        </div>
-        <p style="color:#8B949E;font-size:13px;text-align:center;margin-top:12px">Escolha como inserir os dados</p>
-      </div>
-
-      <!-- Tela 2 — OCR Lendo -->
-      <div style="scroll-snap-align:center;flex-shrink:0;width:260px">
-        <div style="background:#161B22;border:1px solid rgba(255,255,255,0.08);border-radius:32px;padding:16px;height:520px;display:flex;flex-direction:column">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;padding:0 4px">
-            <span style="color:#E6EDF3;font-size:11px;font-weight:600">9:41</span>
-          </div>
-          <div style="background:#1976D2;border-radius:12px;padding:12px 14px;margin-bottom:14px;text-align:center">
-            <span style="color:#fff;font-size:14px;font-weight:700">Processando...</span>
-          </div>
-          <!-- Simulação OCR -->
-          <div style="background:#0D1117;border-radius:12px;flex:1;padding:14px;margin-bottom:14px;position:relative;overflow:hidden">
-            <!-- Etiqueta simulada -->
-            <div style="background:#fff;border-radius:8px;padding:10px;margin-bottom:8px">
-              <div style="height:6px;background:#eee;border-radius:3px;margin-bottom:6px;width:80%"></div>
-              <div style="height:6px;background:#eee;border-radius:3px;margin-bottom:6px;width:60%"></div>
-              <div style="height:6px;background:#00BCD4;border-radius:3px;margin-bottom:6px;width:70%"></div>
-              <div style="height:6px;background:#eee;border-radius:3px;width:50%"></div>
-            </div>
-            <!-- Scanner line animado -->
-            <div style="position:absolute;left:16px;right:16px;height:2px;background:linear-gradient(90deg,transparent,#00BCD4,transparent);animation:scan 1.5s ease-in-out infinite;top:50%"></div>
-            <div style="text-align:center;margin-top:16px">
-              <div style="width:32px;height:32px;border:3px solid rgba(255,255,255,0.1);border-top-color:#00BCD4;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 8px"></div>
-              <p style="color:#00BCD4;font-size:11px">Lendo etiqueta...</p>
-            </div>
-          </div>
-          <div style="background:rgba(0,188,212,0.1);border:1px solid rgba(0,188,212,0.3);border-radius:10px;padding:10px;text-align:center">
-            <span style="color:#00BCD4;font-size:11px">🎯 OCR automático em ação</span>
-          </div>
-        </div>
-        <p style="color:#8B949E;font-size:13px;text-align:center;margin-top:12px">Leitura automática da etiqueta</p>
-      </div>
-
-      <!-- Tela 3 — Confirmação -->
-      <div style="scroll-snap-align:center;flex-shrink:0;width:260px">
-        <div style="background:#161B22;border:1px solid rgba(255,255,255,0.08);border-radius:32px;padding:16px;height:520px;display:flex;flex-direction:column">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;padding:0 4px">
-            <span style="color:#E6EDF3;font-size:11px;font-weight:600">9:41</span>
-          </div>
-          <div style="background:#1976D2;border-radius:12px;padding:12px 14px;margin-bottom:14px;text-align:center">
-            <span style="color:#fff;font-size:14px;font-weight:700">Confirmar Dados</span>
-          </div>
-          <!-- Campos preenchidos -->
-          <div style="flex:1;overflow:hidden">
-            <div style="margin-bottom:8px">
-              <div style="color:#8B949E;font-size:9px;text-transform:uppercase;margin-bottom:3px">CEP</div>
-              <div style="background:#0D1117;border:1px solid rgba(0,188,212,0.4);border-radius:8px;padding:8px 10px;color:#E6EDF3;font-size:12px">15030-200</div>
-            </div>
-            <div style="margin-bottom:8px">
-              <div style="color:#8B949E;font-size:9px;text-transform:uppercase;margin-bottom:3px">Endereço</div>
-              <div style="background:#0D1117;border:1px solid rgba(0,188,212,0.4);border-radius:8px;padding:8px 10px;color:#E6EDF3;font-size:12px">Rua General Osório</div>
-            </div>
-            <div style="display:flex;gap:8px;margin-bottom:8px">
-              <div style="flex:1">
-                <div style="color:#8B949E;font-size:9px;text-transform:uppercase;margin-bottom:3px">Número</div>
-                <div style="background:#0D1117;border:1px solid rgba(0,188,212,0.4);border-radius:8px;padding:8px 10px;color:#E6EDF3;font-size:12px">1278</div>
-              </div>
-            </div>
-            <div style="margin-bottom:8px">
-              <div style="color:#8B949E;font-size:9px;text-transform:uppercase;margin-bottom:3px">Cidade</div>
-              <div style="background:#0D1117;border:1px solid rgba(0,188,212,0.4);border-radius:8px;padding:8px 10px;color:#E6EDF3;font-size:12px">São José do Rio Preto - SP</div>
-            </div>
-          </div>
-          <div style="background:#2E7D32;border-radius:10px;padding:12px;text-align:center;margin-top:8px">
-            <span style="color:#fff;font-size:13px;font-weight:700">✅ Confirmar Entrega</span>
-          </div>
-        </div>
-        <p style="color:#8B949E;font-size:13px;text-align:center;margin-top:12px">Revise e confirme os dados</p>
-      </div>
-
-      <!-- Tela 4 — Rota -->
-      <div style="scroll-snap-align:center;flex-shrink:0;width:260px">
-        <div style="background:#161B22;border:1px solid rgba(255,255,255,0.08);border-radius:32px;padding:16px;height:520px;display:flex;flex-direction:column">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;padding:0 4px">
-            <span style="color:#E6EDF3;font-size:11px;font-weight:600">9:41</span>
-          </div>
-          <div style="background:#1976D2;border-radius:12px;padding:12px 14px;margin-bottom:14px;text-align:center">
-            <span style="color:#fff;font-size:14px;font-weight:700">Rota do Dia</span>
-          </div>
-          <!-- Mapa simulado -->
-          <div style="background:#1a2a1a;border-radius:12px;flex:1;margin-bottom:14px;position:relative;overflow:hidden">
-            <div style="position:absolute;inset:0;opacity:0.3;background:repeating-linear-gradient(0deg,transparent,transparent 20px,rgba(0,188,212,0.1) 20px,rgba(0,188,212,0.1) 21px),repeating-linear-gradient(90deg,transparent,transparent 20px,rgba(0,188,212,0.1) 20px,rgba(0,188,212,0.1) 21px)"></div>
-            <!-- Pins -->
-            <div style="position:absolute;top:30%;left:40%;font-size:20px">📍</div>
-            <div style="position:absolute;top:50%;left:60%;font-size:20px">📍</div>
-            <div style="position:absolute;top:65%;left:30%;font-size:20px">📍</div>
-            <!-- Linha de rota -->
-            <svg style="position:absolute;inset:0;width:100%;height:100%">
-              <polyline points="44%,32% 62%,52% 32%,67%" stroke="#00BCD4" stroke-width="2" fill="none" stroke-dasharray="4,4"/>
-            </svg>
-          </div>
-          <!-- Lista mini -->
-          <div style="display:flex;flex-direction:column;gap:6px">
-            <div style="display:flex;align-items:center;gap:8px;background:#0D1117;border-radius:8px;padding:8px">
-              <div style="width:20px;height:20px;background:#00BCD4;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;color:#fff;font-weight:700;flex-shrink:0">1</div>
-              <span style="color:#E6EDF3;font-size:11px">Rua das Flores, 123</span>
-            </div>
-            <div style="display:flex;align-items:center;gap:8px;background:#0D1117;border-radius:8px;padding:8px">
-              <div style="width:20px;height:20px;background:#00BCD4;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;color:#fff;font-weight:700;flex-shrink:0">2</div>
-              <span style="color:#E6EDF3;font-size:11px">Av. Brasil, 456</span>
-            </div>
-          </div>
-        </div>
-        <p style="color:#8B949E;font-size:13px;text-align:center;margin-top:12px">Rota otimizada no mapa</p>
-      </div>
-
-      <!-- Tela 5 — Relatório -->
-      <div style="scroll-snap-align:center;flex-shrink:0;width:260px">
-        <div style="background:#161B22;border:1px solid rgba(255,255,255,0.08);border-radius:32px;padding:16px;height:520px;display:flex;flex-direction:column">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;padding:0 4px">
-            <span style="color:#E6EDF3;font-size:11px;font-weight:600">9:41</span>
-          </div>
-          <div style="background:#6A1B9A;border-radius:12px;padding:12px 14px;margin-bottom:14px;text-align:center">
-            <span style="color:#fff;font-size:14px;font-weight:700">Relatórios</span>
-          </div>
-          <!-- Stats -->
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px">
-            <div style="background:#0D1117;border-radius:10px;padding:12px;text-align:center">
-              <div style="font-size:22px;font-weight:800;color:#00BCD4">24</div>
-              <div style="color:#8B949E;font-size:10px;margin-top:2px">Entregas</div>
-            </div>
-            <div style="background:#0D1117;border-radius:10px;padding:12px;text-align:center">
-              <div style="font-size:22px;font-weight:800;color:#00BCD4">21</div>
-              <div style="color:#8B949E;font-size:10px;margin-top:2px">Concluídas</div>
-            </div>
-            <div style="background:#0D1117;border-radius:10px;padding:12px;text-align:center">
-              <div style="font-size:22px;font-weight:800;color:#00BCD4">6.2h</div>
-              <div style="color:#8B949E;font-size:10px;margin-top:2px">Tempo</div>
-            </div>
-            <div style="background:#0D1117;border-radius:10px;padding:12px;text-align:center">
-              <div style="font-size:22px;font-weight:800;color:#00BCD4">87%</div>
-              <div style="color:#8B949E;font-size:10px;margin-top:2px">Taxa</div>
-            </div>
-          </div>
-          <!-- Barra de progresso -->
-          <div style="background:#0D1117;border-radius:10px;padding:12px;flex:1">
-            <div style="color:#8B949E;font-size:10px;margin-bottom:8px">DESEMPENHO DA SEMANA</div>
-            <div style="display:flex;flex-direction:column;gap:6px">
-              <div>
-                <div style="display:flex;justify-content:space-between;margin-bottom:3px">
-                  <span style="color:#E6EDF3;font-size:10px">Seg</span>
-                  <span style="color:#00BCD4;font-size:10px">8</span>
-                </div>
-                <div style="background:rgba(255,255,255,0.05);border-radius:3px;height:4px"><div style="width:80%;height:100%;background:#00BCD4;border-radius:3px"></div></div>
-              </div>
-              <div>
-                <div style="display:flex;justify-content:space-between;margin-bottom:3px">
-                  <span style="color:#E6EDF3;font-size:10px">Ter</span>
-                  <span style="color:#00BCD4;font-size:10px">6</span>
-                </div>
-                <div style="background:rgba(255,255,255,0.05);border-radius:3px;height:4px"><div style="width:60%;height:100%;background:#00BCD4;border-radius:3px"></div></div>
-              </div>
-              <div>
-                <div style="display:flex;justify-content:space-between;margin-bottom:3px">
-                  <span style="color:#E6EDF3;font-size:10px">Qua</span>
-                  <span style="color:#00BCD4;font-size:10px">10</span>
-                </div>
-                <div style="background:rgba(255,255,255,0.05);border-radius:3px;height:4px"><div style="width:100%;height:100%;background:#00BCD4;border-radius:3px"></div></div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <p style="color:#8B949E;font-size:13px;text-align:center;margin-top:12px">Acompanhe seu desempenho</p>
-      </div>
-
-    </div>
-
-    <!-- Indicadores -->
-    <div style="display:flex;justify-content:center;gap:6px;margin-top:8px" id="dots">
-      <div style="width:6px;height:6px;border-radius:50%;background:#00BCD4"></div>
-      <div style="width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,0.2)"></div>
-      <div style="width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,0.2)"></div>
-      <div style="width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,0.2)"></div>
-      <div style="width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,0.2)"></div>
-    </div>
-  </div>
-</section>
-
-<style>
-@keyframes scan {
-  0%   { top: 20%; }
-  50%  { top: 80%; }
-  100% { top: 20%; }
-}
 #carrossel::-webkit-scrollbar { display: none; }
-</style>
-
-<script>
-// Atualiza dots conforme scroll
-var carrossel = document.getElementById('carrossel');
-var dots = document.getElementById('dots').children;
-carrossel.addEventListener('scroll', function() {
-  var idx = Math.round(carrossel.scrollLeft / 276);
-  for (var i = 0; i < dots.length; i++) {
-    dots[i].style.background = i === idx
-      ? '#00BCD4'
-      : 'rgba(255,255,255,0.2)';
-  }
-});
-</script>
-
-/* ── FOOTER ───────────────────────────────────── */
-
-footer {
-  padding: 32px 24px;
-  border-top: 1px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  align-items: center;
-  text-align: center;
-}
-
-.footer-logo {
-  font-family: 'Syne', sans-serif;
-  font-size: 20px;
-  font-weight: 800;
-  color: var(--cyan);
-}
-
-footer p {
-  font-size: 13px;
-  color: var(--text-muted);
-}
-
-footer a {
-  color: var(--cyan);
-  text-decoration: none;
-}
-
-/* ── ANIMATIONS ───────────────────────────────── */
-
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-/* ── DESKTOP ──────────────────────────────────── */
 
 @media (min-width: 640px) {
   .hero { padding: 80px 40px 100px; }
@@ -632,19 +86,8 @@ footer a {
   .section { padding: 100px 40px; }
   .story { padding: 100px 40px; }
   .cta-section { padding: 100px 40px; }
-
-  .features {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-  }
-
-  .hero, .section, .story, .cta-section, footer {
-    max-width: 800px;
-    margin-left: auto;
-    margin-right: auto;
-  }
-
+  .features { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .hero, .section, .story, .cta-section, footer { max-width: 800px; margin-left: auto; margin-right: auto; }
   .stats { max-width: 800px; margin: 0 auto; }
 }
 </style>
@@ -659,12 +102,8 @@ footer a {
   <h1>SmalLog App<br><span>Logística</span><br><span>Inteligente</span><br>na sua mão.</h1>
   <p>O SmalLog ajuda entregadores a organizar rotas, registrar entregas e manter o histórico — tudo no celular, sem papel.</p>
   <div class="hero-cta">
-    <a href="#cadastro" class="btn-primary">
-      📲 Quero testar o app
-    </a>
-    <a href="#como-funciona" class="btn-secondary">
-      Ver como funciona
-    </a>
+    <a href="#cadastro" class="btn-primary">📲 Quero testar o app</a>
+    <a href="#como-funciona" class="btn-secondary">Ver como funciona</a>
   </div>
 </section>
 
@@ -691,60 +130,236 @@ footer a {
   <div class="features">
     <div class="feature-card">
       <div class="feature-icon">📷</div>
-      <div>
-        <h3>Leitura de etiqueta</h3>
-        <p>Aponte a câmera para a etiqueta — o app lê o endereço automaticamente.</p>
-      </div>
+      <div><h3>Leitura de etiqueta</h3><p>Aponte a câmera para a etiqueta — o app lê o endereço automaticamente.</p></div>
     </div>
     <div class="feature-card">
       <div class="feature-icon">🗺️</div>
-      <div>
-        <h3>Organização de rota</h3>
-        <p>Visualize todas as entregas do dia no mapa e organize a sequência ideal.</p>
-      </div>
+      <div><h3>Organização de rota</h3><p>Visualize todas as entregas do dia no mapa e organize a sequência ideal.</p></div>
     </div>
     <div class="feature-card">
       <div class="feature-icon">✅</div>
-      <div>
-        <h3>Confirmação com foto</h3>
-        <p>Registre a entrega com foto como comprovante — protege você e o cliente.</p>
-      </div>
+      <div><h3>Confirmação com foto</h3><p>Registre a entrega com foto como comprovante — protege você e o cliente.</p></div>
     </div>
     <div class="feature-card">
       <div class="feature-icon">📊</div>
-      <div>
-        <h3>Histórico e relatórios</h3>
-        <p>Acompanhe seu desempenho semanal: entregas, distância e tempo.</p>
-      </div>
+      <div><h3>Histórico e relatórios</h3><p>Acompanhe seu desempenho semanal: entregas, distância e tempo.</p></div>
     </div>
     <div class="feature-card">
       <div class="feature-icon">📦</div>
-      <div>
-        <h3>Coleta via formulário</h3>
-        <p>Receba os dados de entrega direto pelo WhatsApp, sem digitar nada.</p>
-      </div>
+      <div><h3>Coleta via formulário</h3><p>Receba os dados de entrega direto pelo WhatsApp, sem digitar nada.</p></div>
     </div>
     <div class="feature-card">
       <div class="feature-icon">🔒</div>
-      <div>
-        <h3>Dados protegidos</h3>
-        <p>Tudo fica no seu celular. Sem compartilhamento, seguindo a LGPD.</p>
-      </div>
+      <div><h3>Dados protegidos</h3><p>Tudo fica no seu celular. Sem compartilhamento, seguindo a LGPD.</p></div>
     </div>
+  </div>
+</section>
+
+<!-- APP PREVIEW -->
+<section style="padding:80px 0;background:#0D1117;overflow:hidden">
+  <div style="max-width:800px;margin:0 auto;padding:0 24px;text-align:center;margin-bottom:40px">
+    <p style="font-size:12px;font-weight:600;color:#00BCD4;text-transform:uppercase;letter-spacing:2px;margin-bottom:12px">Como funciona</p>
+    <h2 style="font-family:'Syne',sans-serif;font-size:clamp(28px,6vw,42px);font-weight:800;letter-spacing:-1px;color:#E6EDF3">Veja o app em ação</h2>
+  </div>
+
+  <div id="carrossel" style="display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:16px;padding:0 24px 24px;scrollbar-width:none;-ms-overflow-style:none">
+
+    <!-- Tela 1 — Nova Entrega -->
+    <div style="scroll-snap-align:center;flex-shrink:0;width:260px">
+      <div style="background:#161B22;border:1px solid rgba(255,255,255,0.08);border-radius:32px;padding:16px;height:520px;display:flex;flex-direction:column">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;padding:0 4px">
+          <span style="color:#E6EDF3;font-size:11px;font-weight:600">9:41</span>
+        </div>
+        <div style="background:#1976D2;border-radius:12px;padding:12px 14px;margin-bottom:14px;text-align:center">
+          <span style="color:#fff;font-size:14px;font-weight:700">Foto do Pacote</span>
+        </div>
+        <div style="background:#0D1117;border:2px dashed rgba(0,188,212,0.4);border-radius:12px;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;margin-bottom:14px">
+          <div style="font-size:36px;margin-bottom:8px">📦</div>
+          <p style="color:#8B949E;font-size:11px;text-align:center;padding:0 12px">Tire uma foto da etiqueta do pacote</p>
+        </div>
+        <div style="display:flex;gap:8px;margin-bottom:8px">
+          <div style="flex:1;background:#1976D2;border-radius:10px;padding:12px;text-align:center">
+            <div style="font-size:18px">📷</div>
+            <div style="color:#fff;font-size:10px;font-weight:700;margin-top:4px">Câmera</div>
+          </div>
+          <div style="flex:1;background:#7B1FA2;border-radius:10px;padding:12px;text-align:center">
+            <div style="font-size:18px">🎤</div>
+            <div style="color:#fff;font-size:10px;font-weight:700;margin-top:4px">Voz</div>
+          </div>
+        </div>
+        <div style="border:1.5px solid #388E3C;border-radius:10px;padding:10px;text-align:center">
+          <span style="color:#388E3C;font-size:11px;font-weight:600">✏️ Digitar manualmente</span>
+        </div>
+      </div>
+      <p style="color:#8B949E;font-size:13px;text-align:center;margin-top:12px">Escolha como inserir os dados</p>
+    </div>
+
+    <!-- Tela 2 — OCR -->
+    <div style="scroll-snap-align:center;flex-shrink:0;width:260px">
+      <div style="background:#161B22;border:1px solid rgba(255,255,255,0.08);border-radius:32px;padding:16px;height:520px;display:flex;flex-direction:column">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;padding:0 4px">
+          <span style="color:#E6EDF3;font-size:11px;font-weight:600">9:41</span>
+        </div>
+        <div style="background:#1976D2;border-radius:12px;padding:12px 14px;margin-bottom:14px;text-align:center">
+          <span style="color:#fff;font-size:14px;font-weight:700">Processando...</span>
+        </div>
+        <div style="background:#0D1117;border-radius:12px;flex:1;padding:14px;margin-bottom:14px;position:relative;overflow:hidden">
+          <div style="background:#fff;border-radius:8px;padding:10px;margin-bottom:8px">
+            <div style="height:6px;background:#eee;border-radius:3px;margin-bottom:6px;width:80%"></div>
+            <div style="height:6px;background:#eee;border-radius:3px;margin-bottom:6px;width:60%"></div>
+            <div style="height:6px;background:#00BCD4;border-radius:3px;margin-bottom:6px;width:70%"></div>
+            <div style="height:6px;background:#eee;border-radius:3px;width:50%"></div>
+          </div>
+          <div style="position:absolute;left:16px;right:16px;height:2px;background:linear-gradient(90deg,transparent,#00BCD4,transparent);animation:scan 1.5s ease-in-out infinite;top:50%"></div>
+          <div style="text-align:center;margin-top:16px">
+            <div style="width:32px;height:32px;border:3px solid rgba(255,255,255,0.1);border-top-color:#00BCD4;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 8px"></div>
+            <p style="color:#00BCD4;font-size:11px">Lendo etiqueta...</p>
+          </div>
+        </div>
+        <div style="background:rgba(0,188,212,0.1);border:1px solid rgba(0,188,212,0.3);border-radius:10px;padding:10px;text-align:center">
+          <span style="color:#00BCD4;font-size:11px">🎯 OCR automático em ação</span>
+        </div>
+      </div>
+      <p style="color:#8B949E;font-size:13px;text-align:center;margin-top:12px">Leitura automática da etiqueta</p>
+    </div>
+
+    <!-- Tela 3 — Confirmação -->
+    <div style="scroll-snap-align:center;flex-shrink:0;width:260px">
+      <div style="background:#161B22;border:1px solid rgba(255,255,255,0.08);border-radius:32px;padding:16px;height:520px;display:flex;flex-direction:column">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;padding:0 4px">
+          <span style="color:#E6EDF3;font-size:11px;font-weight:600">9:41</span>
+        </div>
+        <div style="background:#1976D2;border-radius:12px;padding:12px 14px;margin-bottom:14px;text-align:center">
+          <span style="color:#fff;font-size:14px;font-weight:700">Confirmar Dados</span>
+        </div>
+        <div style="flex:1;overflow:hidden">
+          <div style="margin-bottom:8px">
+            <div style="color:#8B949E;font-size:9px;text-transform:uppercase;margin-bottom:3px">CEP</div>
+            <div style="background:#0D1117;border:1px solid rgba(0,188,212,0.4);border-radius:8px;padding:8px 10px;color:#E6EDF3;font-size:12px">15030-200</div>
+          </div>
+          <div style="margin-bottom:8px">
+            <div style="color:#8B949E;font-size:9px;text-transform:uppercase;margin-bottom:3px">Endereço</div>
+            <div style="background:#0D1117;border:1px solid rgba(0,188,212,0.4);border-radius:8px;padding:8px 10px;color:#E6EDF3;font-size:12px">Rua General Osório</div>
+          </div>
+          <div style="margin-bottom:8px">
+            <div style="color:#8B949E;font-size:9px;text-transform:uppercase;margin-bottom:3px">Número</div>
+            <div style="background:#0D1117;border:1px solid rgba(0,188,212,0.4);border-radius:8px;padding:8px 10px;color:#E6EDF3;font-size:12px">1278</div>
+          </div>
+          <div style="margin-bottom:8px">
+            <div style="color:#8B949E;font-size:9px;text-transform:uppercase;margin-bottom:3px">Cidade</div>
+            <div style="background:#0D1117;border:1px solid rgba(0,188,212,0.4);border-radius:8px;padding:8px 10px;color:#E6EDF3;font-size:12px">São José do Rio Preto - SP</div>
+          </div>
+        </div>
+        <div style="background:#2E7D32;border-radius:10px;padding:12px;text-align:center;margin-top:8px">
+          <span style="color:#fff;font-size:13px;font-weight:700">✅ Confirmar Entrega</span>
+        </div>
+      </div>
+      <p style="color:#8B949E;font-size:13px;text-align:center;margin-top:12px">Revise e confirme os dados</p>
+    </div>
+
+    <!-- Tela 4 — Rota -->
+    <div style="scroll-snap-align:center;flex-shrink:0;width:260px">
+      <div style="background:#161B22;border:1px solid rgba(255,255,255,0.08);border-radius:32px;padding:16px;height:520px;display:flex;flex-direction:column">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;padding:0 4px">
+          <span style="color:#E6EDF3;font-size:11px;font-weight:600">9:41</span>
+        </div>
+        <div style="background:#1976D2;border-radius:12px;padding:12px 14px;margin-bottom:14px;text-align:center">
+          <span style="color:#fff;font-size:14px;font-weight:700">Rota do Dia</span>
+        </div>
+        <div style="background:#1a2a1a;border-radius:12px;flex:1;margin-bottom:14px;position:relative;overflow:hidden">
+          <div style="position:absolute;inset:0;opacity:0.3;background:repeating-linear-gradient(0deg,transparent,transparent 20px,rgba(0,188,212,0.1) 20px,rgba(0,188,212,0.1) 21px),repeating-linear-gradient(90deg,transparent,transparent 20px,rgba(0,188,212,0.1) 20px,rgba(0,188,212,0.1) 21px)"></div>
+          <div style="position:absolute;top:30%;left:40%;font-size:20px">📍</div>
+          <div style="position:absolute;top:50%;left:60%;font-size:20px">📍</div>
+          <div style="position:absolute;top:65%;left:30%;font-size:20px">📍</div>
+          <svg style="position:absolute;inset:0;width:100%;height:100%">
+            <polyline points="44%,32% 62%,52% 32%,67%" stroke="#00BCD4" stroke-width="2" fill="none" stroke-dasharray="4,4"/>
+          </svg>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <div style="display:flex;align-items:center;gap:8px;background:#0D1117;border-radius:8px;padding:8px">
+            <div style="width:20px;height:20px;background:#00BCD4;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;color:#fff;font-weight:700;flex-shrink:0">1</div>
+            <span style="color:#E6EDF3;font-size:11px">Rua das Flores, 123</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;background:#0D1117;border-radius:8px;padding:8px">
+            <div style="width:20px;height:20px;background:#00BCD4;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;color:#fff;font-weight:700;flex-shrink:0">2</div>
+            <span style="color:#E6EDF3;font-size:11px">Av. Brasil, 456</span>
+          </div>
+        </div>
+      </div>
+      <p style="color:#8B949E;font-size:13px;text-align:center;margin-top:12px">Rota otimizada no mapa</p>
+    </div>
+
+    <!-- Tela 5 — Relatório -->
+    <div style="scroll-snap-align:center;flex-shrink:0;width:260px">
+      <div style="background:#161B22;border:1px solid rgba(255,255,255,0.08);border-radius:32px;padding:16px;height:520px;display:flex;flex-direction:column">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;padding:0 4px">
+          <span style="color:#E6EDF3;font-size:11px;font-weight:600">9:41</span>
+        </div>
+        <div style="background:#6A1B9A;border-radius:12px;padding:12px 14px;margin-bottom:14px;text-align:center">
+          <span style="color:#fff;font-size:14px;font-weight:700">Relatórios</span>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px">
+          <div style="background:#0D1117;border-radius:10px;padding:12px;text-align:center">
+            <div style="font-size:22px;font-weight:800;color:#00BCD4">24</div>
+            <div style="color:#8B949E;font-size:10px;margin-top:2px">Entregas</div>
+          </div>
+          <div style="background:#0D1117;border-radius:10px;padding:12px;text-align:center">
+            <div style="font-size:22px;font-weight:800;color:#00BCD4">21</div>
+            <div style="color:#8B949E;font-size:10px;margin-top:2px">Concluídas</div>
+          </div>
+          <div style="background:#0D1117;border-radius:10px;padding:12px;text-align:center">
+            <div style="font-size:22px;font-weight:800;color:#00BCD4">6.2h</div>
+            <div style="color:#8B949E;font-size:10px;margin-top:2px">Tempo</div>
+          </div>
+          <div style="background:#0D1117;border-radius:10px;padding:12px;text-align:center">
+            <div style="font-size:22px;font-weight:800;color:#00BCD4">87%</div>
+            <div style="color:#8B949E;font-size:10px;margin-top:2px">Taxa</div>
+          </div>
+        </div>
+        <div style="background:#0D1117;border-radius:10px;padding:12px;flex:1">
+          <div style="color:#8B949E;font-size:10px;margin-bottom:8px">DESEMPENHO DA SEMANA</div>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <div>
+              <div style="display:flex;justify-content:space-between;margin-bottom:3px">
+                <span style="color:#E6EDF3;font-size:10px">Seg</span><span style="color:#00BCD4;font-size:10px">8</span>
+              </div>
+              <div style="background:rgba(255,255,255,0.05);border-radius:3px;height:4px"><div style="width:80%;height:100%;background:#00BCD4;border-radius:3px"></div></div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;margin-bottom:3px">
+                <span style="color:#E6EDF3;font-size:10px">Ter</span><span style="color:#00BCD4;font-size:10px">6</span>
+              </div>
+              <div style="background:rgba(255,255,255,0.05);border-radius:3px;height:4px"><div style="width:60%;height:100%;background:#00BCD4;border-radius:3px"></div></div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;margin-bottom:3px">
+                <span style="color:#E6EDF3;font-size:10px">Qua</span><span style="color:#00BCD4;font-size:10px">10</span>
+              </div>
+              <div style="background:rgba(255,255,255,0.05);border-radius:3px;height:4px"><div style="width:100%;height:100%;background:#00BCD4;border-radius:3px"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p style="color:#8B949E;font-size:13px;text-align:center;margin-top:12px">Acompanhe seu desempenho</p>
+    </div>
+
+  </div>
+
+  <!-- Dots -->
+  <div style="display:flex;justify-content:center;gap:6px;margin-top:8px" id="dots">
+    <div style="width:6px;height:6px;border-radius:50%;background:#00BCD4"></div>
+    <div style="width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,0.2)"></div>
+    <div style="width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,0.2)"></div>
+    <div style="width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,0.2)"></div>
+    <div style="width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,0.2)"></div>
   </div>
 </section>
 
 <!-- STORY -->
 <section class="story">
   <div class="section-label">Nossa história</div>
-  <h2 style="font-family:'Syne',sans-serif;font-size:clamp(28px,6vw,42px);font-weight:800;letter-spacing:-1px;margin-bottom:32px">
-    O SmalLog nasceu da rua.
-  </h2>
-
-  <div class="story-quote">
-    <p>"Foi assim que o aplicativo mandou."</p>
-  </div>
-
+  <h2 style="font-family:'Syne',sans-serif;font-size:clamp(28px,6vw,42px);font-weight:800;letter-spacing:-1px;margin-bottom:32px">O SmalLog nasceu da rua.</h2>
+  <div class="story-quote"><p>"Foi assim que o aplicativo mandou."</p></div>
   <div class="story-body">
     <p>Tenho uma pequena oficina de restauração de móveis ao lado de um e-commerce. O movimento de entregadores na porta é constante.</p>
     <p>Um dia, vi um entregador parar do outro lado da rua e sair para várias entregas próximas. Eu estava aguardando uma encomenda. Cerca de meia hora depois, ele voltou… e só então fez a minha entrega.</p>
@@ -755,7 +370,6 @@ footer a {
     <p>Foi aí que surgiu a ideia: <strong>e se o próprio entregador tivesse mais controle sobre o que está fazendo?</strong></p>
     <p>Mesmo não sendo especialista, fui estudar, aprender e usar tecnologia e inteligência artificial para construir uma alternativa. Hoje, esse trabalho está em teste real com quem vive isso todo dia.</p>
   </div>
-
   <div class="story-signature">
     <div class="story-avatar">👨‍🔧</div>
     <div>
@@ -769,7 +383,6 @@ footer a {
 <section class="cta-section" id="cadastro">
   <h2>Quero participar do beta</h2>
   <p>O SmalLog está em fase beta e é totalmente gratuito.<br>Preencha os dados abaixo e entraremos em contato.</p>
-
   <div id="form-box" style="max-width:400px;margin:0 auto;text-align:left">
     <div style="margin-bottom:14px">
       <label style="display:block;font-size:12px;font-weight:600;color:#8B949E;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Nome completo *</label>
@@ -787,14 +400,29 @@ footer a {
       <label style="display:block;font-size:12px;font-weight:600;color:#8B949E;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Cidade / Estado *</label>
       <input id="f-cidade" type="text" placeholder="Ex: São Paulo - SP" style="width:100%;padding:13px;border:1.5px solid rgba(255,255,255,0.1);border-radius:10px;background:rgba(255,255,255,0.05);color:#E6EDF3;font-size:15px;font-family:inherit;outline:none" onfocus="this.style.borderColor='#00BCD4'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'">
     </div>
-    <button onclick="enviarCadastro()" id="btn-cadastro" class="btn-primary" style="width:100%">
-      📲 Quero participar do beta
-    </button>
+    <button onclick="enviarCadastro()" id="btn-cadastro" class="btn-primary" style="width:100%">📲 Quero participar do beta</button>
     <p id="form-msg" style="text-align:center;margin-top:16px;font-size:14px;display:none"></p>
   </div>
 </section>
 
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">SmalLog.app</div>
+  <p>Logística Inteligente para a Última Milha</p>
+  <p><a href="/privacidade.html">Política de Privacidade</a> · <a href="mailto:suporte@smallog.app">suporte@smallog.app</a></p>
+  <p style="font-size:11px;margin-top:4px">© 2026 AgAi Tecnologia · São José do Rio Preto, SP</p>
+</footer>
+
 <script>
+var carrossel = document.getElementById('carrossel');
+var dots = document.getElementById('dots').children;
+carrossel.addEventListener('scroll', function() {
+  var idx = Math.round(carrossel.scrollLeft / 276);
+  for (var i = 0; i < dots.length; i++) {
+    dots[i].style.background = i === idx ? '#00BCD4' : 'rgba(255,255,255,0.2)';
+  }
+});
+
 async function enviarCadastro() {
   var nome   = document.getElementById('f-nome').value.trim();
   var email  = document.getElementById('f-email').value.trim();
@@ -802,27 +430,22 @@ async function enviarCadastro() {
   var cidade = document.getElementById('f-cidade').value.trim();
   var msg    = document.getElementById('form-msg');
   var btn    = document.getElementById('btn-cadastro');
-
   if (!nome || !email || !cidade) {
     msg.textContent = '⚠️ Preencha nome, e-mail e cidade.';
     msg.style.color = '#f44336';
     msg.style.display = 'block';
     return;
   }
-
   btn.disabled = true;
   btn.textContent = '⏳ Enviando...';
   msg.style.display = 'none';
-
   try {
     var response = await fetch('/api/cadastro', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ nome: nome, email: email, telefone: tel, cidade: cidade })
     });
-
     var data = await response.json();
-
     if (data.ok) {
       document.getElementById('form-box').innerHTML =
         '<div style="text-align:center;padding:32px 0">' +
@@ -830,9 +453,7 @@ async function enviarCadastro() {
         '<h3 style="font-size:20px;margin-bottom:8px">Obrigado, ' + nome.split(' ')[0] + '!</h3>' +
         '<p style="color:#8B949E;line-height:1.6">Recebemos seu cadastro.<br>Em breve entraremos em contato com o link de acesso.</p>' +
         '</div>';
-    } else {
-      throw new Error(data.erro);
-    }
+    } else { throw new Error(data.erro); }
   } catch(e) {
     btn.disabled = false;
     btn.textContent = '📲 Quero participar do beta';
@@ -842,17 +463,6 @@ async function enviarCadastro() {
   }
 }
 </script>
-
-<!-- FOOTER -->
-<footer>
-  <div class="footer-logo">SmalLog.app</div>
-  <p>Logística Inteligente para a Última Milha</p>
-  <p>
-    <a href="/privacidade.html">Política de Privacidade</a> ·
-    <a href="mailto:suporte@smallog.app">suporte@smallog.app</a>
-  </p>
-  <p style="font-size:11px;margin-top:4px">© 2026 AgAi Tecnologia · São José do Rio Preto, SP</p>
-</footer>
 
 </body>
 </html>
